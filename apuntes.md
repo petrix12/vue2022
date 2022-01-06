@@ -136,43 +136,461 @@
 
 ## Vue JS 3! - Fundamentos
 ### 14. Introducción
-3 min
++ https://bluuweb.github.io/vue-udemy/01-fundamentos
+
 ### 15. ¿Qué es Vue 3?
-2 min
++ **Contenido**: sobre los fundamentos de Vue 3.
+
 ### 16. Página oficial de Vue js 3 y CDN
-1 min
++ Guía oficial de Vue 3: https://v3.vuejs.org/guide/introduction.html
++ CDN:
+    ```html
+    <script src="https://unpkg.com/vue@next"></script>
+    ```
+    + **Nota**: verificar siempre en la página oficial
++ No confundir con la documentación de Vue 2: https://vuejs.org/v2/guide/ ya que ahí el CDN es distinto.
++ Por defecto si abren o buscan Vue los llevará a la versión 2, esperemos que a principios de año lance la versión 3 con todo!
+
 ### 17. Hola mundo con Vue 3
-8 min
++ https://v3.vuejs.org/guide/installation.html#vue-devtools
+1. Crear **02hola\index.html**:
+    ```html
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hola Mundo</title>
+
+        <script src="https://unpkg.com/vue@next"></script>
+    </head>
+    <body>
+        <div id="app">
+            <h1>{{ titulo }}</h1>
+        </div>
+
+        <script src="main.js"></script>
+        <script>
+            const mountedApp = app.mount('#app')
+        </script>
+    </body>
+    </html>
+    ```
+2. Crear **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            return {
+                titulo: 'HS++'
+            }
+        }
+    })
+    ```
+
 ### 18. Renderizar datos de forma declarativa
-3 min
+1. Modificar **02hola\index.html**:
+    ```html
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Hola Mundo</title>
+
+        <script src="https://unpkg.com/vue@next"></script>
+    </head>
+    <body>
+        <div id="app">
+            <h1>{{ titulo }}</h1>
+            <!-- <h2>{{ cantidad > 11000000 ? 'Es mayor a 11 M' : 'Es menor a 11 M' }}</h2> -->
+            <h2>Saldo disponible: {{ cantidad }}</h2>
+        </div>
+
+        <script src="main.js"></script>
+        <script>
+            const mountedApp = app.mount('#app')
+        </script>
+    </body>
+    </html>
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            return {
+                titulo: 'Banco HS++',
+                cantidad: 1700
+            }
+        }
+    })
+    ```
+
 ### 19. Atributo v-bind
-3 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <div id="app">
+        <h1>{{ titulo }}</h1>
+        <h2>Saldo disponible: {{ cantidad }}</h2>
+        <!-- <a v-bind:href="enlace">Ir a CVPetrix</a> -->
+        <a :href="enlace">Ir a CVPetrix</a>
+    </div>
+    ≡
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            return {
+                titulo: 'Banco HS++',
+                cantidad: 1700,
+                enlace: 'https://cvpetrix.herokuapp.com'
+            }
+        }
+    })
+    ```
+
 ### 20. v-if v-else
-6 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <div id="app">
+        <h1>{{ titulo }}</h1>
+        <h2>Saldo disponible: {{ cantidad }}</h2>
+        <a :href="enlace">Ir a CVPetrix</a>
+
+        <hr>
+        <h2 v-if="estado">Cuenta activa</h2>
+        <h2 v-else>Cuenta inactiva</h2>
+
+        <hr>
+        <h2 v-if="cantidad > 500">Cantidad: {{ cantidad }}</h2>
+        <h2 v-else-if="cantidad <= 500 && cantidad > 0">Cantidad: <span style="color: red">{{ cantidad }}</span></h2>
+        <h2 v-else>Sin dinero</h2>
+
+    </div>
+    ≡
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            return {
+                titulo: 'Banco HS++',
+                cantidad: 0,
+                enlace: 'https://cvpetrix.herokuapp.com',
+                estado: true
+            }
+        }
+    })
+    ```
+
 ### 21. v-for
-4 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <div id="app">
+        ≡
+        <hr>
+
+        <h2>Servicios disponibles</h2>
+        <ul>
+            <li v-for="(servicio, item) in servicios" :key="item">{{ item + 1 }} - {{ servicio }}</li>
+        </ul>
+    </div>
+    ≡
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            return {
+                titulo: 'Banco HS++',
+                cantidad: 0,
+                enlace: 'https://cvpetrix.herokuapp.com',
+                estado: true,
+                servicios: ['transferencias', 'pagos', 'giros', 'cheques']
+            }
+        }
+    })
+    ```
+
 ### 22. Evento Click
-4 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <div id="app">
+        ≡
+        <hr>
+        <!-- <button v-on:click="agregarSaldo">Agregar saldo</button> -->
+        <button @click="agregarSaldo">Agregar saldo</button>
+    </div>
+    ≡
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            ≡
+        },
+        methods: {
+            agregarSaldo(){
+                this.cantidad += 100
+            }
+        }
+    })
+    ```
+3. Abreviaturas:
+    + v-on:click    -> @clik
+    + v-bind:       -> :
+
 ### 23. Botón desactivar
-5 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <div id="app">
+        ≡
+        <hr>
+        <button @click="disminuirSaldo" :disabled="desactivar">Disminuir saldo</button>
+    </div>
+    ≡
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            return {
+                titulo: 'Banco HS++',
+                cantidad: 0,
+                enlace: 'https://cvpetrix.herokuapp.com',
+                estado: true,
+                servicios: ['transferencias', 'pagos', 'giros', 'cheques'],
+                desactivar: false
+            }
+        },
+        methods: {
+            agregarSaldo(){
+                this.cantidad += 100
+                this.desactivar = false
+            },
+            disminuirSaldo(){
+                if(this.cantidad === 0){
+                    this.desactivar = true
+                    alert('¡Saldo en cero!')
+                    return
+                }
+                this.cantidad -= 100
+            }
+        }
+    })
+    ```
+
 ### 24. Parámetros en methods
-1 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <button @click="disminuirSaldo(500)" :disabled="desactivar">Disminuir saldo</button>
+    ≡
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    ≡
+    disminuirSaldo(valor){
+        if(this.cantidad === 0){
+            this.desactivar = true
+            alert('¡Saldo en cero!')
+            return
+        }
+        this.cantidad -= valor
+    }
+    ≡
+    ```
+
 ### 25. Class dinámico
-3 min
+1. Modificar **02hola\index.html**:
+    ```html
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        ≡
+        <script src="https://unpkg.com/vue@next"></script>
+
+        <!-- CSS only - Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    </head>
+    <body>
+        <div id="app">
+            <h1>{{ titulo }}</h1>
+            <h2 class="bg-dark" :class="[cantidad > 500 ? 'text-success' : 'text-danger']">Saldo disponible: {{ cantidad }}</h2>
+            <a :href="enlace">Ir a CVPetrix</a>
+            ≡
+        </div>
+        ≡
+    </body>
+    </html>
+    ```
+
 ### 26. Propiedades computadas (computed)
-4 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <h1>{{ mayusculasTexto }}</h1>
+    <h2 class="bg-dark" :class="colorCantidad">Saldo disponible: {{ cantidad }}</h2>
+    <a :href="enlace">Ir a CVPetrix</a>
+    ≡
+    ```
+2. Modificar **02hola\main.js**:
+    ```js
+    const app = Vue.createApp({
+        data() {
+            ≡
+        },
+        methods: {
+            ≡
+        },
+        computed: {
+            colorCantidad(){
+                return this.cantidad > 500 ? 'text-success' : 'text-danger'
+            },
+            mayusculasTexto(){
+                return this.titulo.toUpperCase()
+            }
+        }
+    })
+    ```
+
 ### 27. Computed VS Methods
-1 min
++ Computed VS Methods:
+    + Respuesta oficial: https://es.vuejs.org/v2/guide/computed.html#Caching-computado-vs-Metodos
+    + Resumen:
+        ```
+        Se puede lograr el mismo resultado pero las propiedades computadas se almacenan en el caché. Una propiedad computada solo se volverá a evaluar cuando alguna de sus dependencias haya cambiado.
+
+        En comparación, una invocación de método siempre ejecutará la función cada vez que ocurre una re-renderizacion.
+
+        ¿Por qué necesitamos caché? Imagina que tenemos una costosa propiedad computada A, que requiere hacer un bucle a través de una gran matriz y hace muchos cálculos. Entonces podemos tener otras propiedades computadas que a su vez dependen de A. Sin caché, estaríamos ejecutando el captador de A muchas veces más de lo necesario. En los casos en que no desee el almacenamiento en caché, utilice un método en su lugar.
+        ```
+
 ### 28. Introducción a componentes
-10 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <body>
+        <div id="app">
+            ≡
+            <hr>
+            <button @click="disminuirSaldo(100)" :disabled="desactivar">Disminuir saldo</button>
+
+            <footer-banco/>
+        </div>
+
+        <script src="main.js"></script>
+        <script src="components/Footer.js"></script>
+        <script>
+            const mountedApp = app.mount('#app')
+        </script>
+    </body>
+    ≡
+    ```
+2. Crear componente **02hola\components\Footer.js**:
+    ```js
+    app.component('footer-banco', {
+        template: /*html*/`
+        <div class="bg-dark py-3 mt-2 text-white">
+            <h3>Footer de mi sitio web</h3>
+        </div>
+        `
+    })
+    ```
+    + **Nota**: para dar formato a los template se recomienda la extensión de VS Code:
+        + es6-string-html
+            + Tobermory
+            + Syntax highlighting in es6 multiline strings
+
 ### 29. Data en componentes
-3 min
+1. Modificar **02hola\components\Footer.js**:
+    ```js
+    app.component('footer-banco', {
+        template: /*html*/`
+        <div class="bg-dark py-3 mt-2 text-white">
+            <h3>{{ texto }} - {{ cantidad }}</h3>
+        </div>
+        `,
+        data() {
+            return {
+                texto: 'Footer de mi sitio web dinámico',
+                cantidad: 1000
+            }
+        }
+    })
+    ```
+
 ### 30. Props - Comunicación entre componentes
-4 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <div id="app">
+        ≡
+        <footer-banco cantidad="700" fecha="Enero 2022" />
+    </div>
+    ≡
+    ```
+2. Modificar **02hola\components\Footer.js**:
+    ```js
+    app.component('footer-banco', {
+        props: ['cantidad', 'fecha'],
+        template: /*html*/`
+        <div class="bg-dark py-3 mt-2 text-white">
+            <h3>{{ texto }} - {{ cantidad }}</h3>
+            <p>{{ fecha }}</p>
+        </div>
+        `,
+        data() {
+            return {
+                texto: 'Footer de mi sitio web dinámico'
+            }
+        }
+    })
+    ```
+
 ### 31. Props dinámicos
-2 min
-### 32. Archivos Terminados de esta sección
-1 min
+1. Modificar **02hola\index.html**:
+    ```html
+    ≡
+    <footer-banco :valor="cantidad" fecha="Enero 2022" />
+    ≡
+    ```
+2. Modificar **02hola\components\Footer.js**:
+    ```js
+    app.component('footer-banco', {
+        props: ['valor', 'fecha'],
+        template: /*html*/`
+        <div class="bg-dark py-3 mt-2 text-white">
+            <h3>{{ texto }} - {{ valor }}</h3>
+            <p>{{ fecha }}</p>
+        </div>
+        `,
+        data() {
+            return {
+                texto: 'Footer de mi sitio web dinámico'
+            }
+        }
+    })
+    ```
+
+### 32. Archivos Terminados de esta Sección
++ Contenido: código de la sección.
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Fundamentos de Vue 3"
++ $ git push -u origin main
+
+
+## Vue CLI 4 - Acelerando el desarrollo web
+
 ### 33. Mi primer proyecto con Vue Cli
 11 min
 ### 34. Vetur can't find tsconfig.json or jsconfig.json
