@@ -581,7 +581,7 @@
     ```
 
 ### 32. Archivos Terminados de esta Sección
-+ Contenido: código de la sección.
++ **Contenido**: código fuente de la sección.
 
 ### Subiendo cambios GitHub:
 + $ git add .
@@ -590,31 +590,447 @@
 
 
 ## Vue CLI 4 - Acelerando el desarrollo web
-
 ### 33. Mi primer proyecto con Vue Cli
-11 min
++ https://bluuweb.github.io/vue-udemy/02-cli
+1. Descargar e instalar [Node.js](https://nodejs.org/es).
+2. Abrir una terminal como administrador y ejecutar:
+    + $ node -v                     (Para verificar la versión de **Node.js**)
+    + $ npm -v                      (Para verificar la versión de **Node package manager** - sistema de gestión de paquetes)
+    + $ npm install -g @vue/cli     (Para instalar **Vue CLI**)
+    + $ vue --version               (Para verificar la versión de **Vue CLI**)
+3. Crear proyecto Vue:
+    + $ vue create 03vue_cli
+    + Seleccionar: Manually select features
+    + Seleccionar solamente:
+        + (*) Choose Vue version
+        + (*) Babel
+    + Seleccionar: 3.x
+    + Seleccionar: In dedicated config files
+    + Save this as a preset for future projects? (y/N): n
+4. Ejecutar proyecto **03vue_cli**:
+    + $ cd 03vue_cli
+    + $ npm run serve
+
 ### 34. Vetur can't find tsconfig.json or jsconfig.json
-1 min
++ **Nota**: si ven una pequeña advertencia en VSCode pueden solucionarla creando un archivo en su directorio raíz llamado: **jsconfig.json** (al mismo nivel que su **package.json**), con la siguiente información:
+    ```json
+    {
+        "include": [
+        "./src/**/*"
+        ]
+    }
+    ```
+    + Esperemos que pronto el CLI de Vue 3 actualice y cree de forma predeterminada el archivo en cuestión.
+
 ### 35. Analizando archivos de nuestro proyecto con Vue cli
-7 min
++ **Contenido**: explicación de la estructura de un proyecto Vue CLI recién creado.
+1. Modificar componente **03vue_cli\src\components\HelloWorld.vue**:
+    ```vue
+    <template>
+        <div class="hello">
+            <h1>{{ msg }}</h1>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        name: 'HelloWorld',
+        props: {
+            msg: String
+        }
+    }
+    </script>
+
+    <!-- Add "scoped" attribute to limit CSS to this component only -->
+    <style scoped>
+    h3 {
+        margin: 40px 0 0;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        display: inline-block;
+        margin: 0 10px;
+    }
+    a {
+        color: #42b983;
+    }
+    </style>
+    ```
+    + **Nota**: para trabajar con proyectos **Vue CLI** se recomienda instalar las siguientes extensiones de VS Code:
+        + **Vetur**
+            + Pine Wu
+            + Vue tooling for VS Code
+        + **Vue VSCode Snippets**
+            + sarah.drasner
+            + Snippets that will supercharge your Vue workflow
+
 ### 36. Creando nuestro primer componente
-8 min
+1. Modificar componente principal **03vue_cli\src\App.vue**:
+    ```vue
+    <template>
+        <img alt="Vue logo" src="./assets/logo.png">
+        <Titulo texto="Mi banco dinámico HS++ 2.0" />
+    </template>
+
+    <script>
+    import Titulo from './components/Titulo'
+
+    export default {
+        name: 'App',
+        components: {
+            Titulo
+        }
+    }
+    </script>
+
+    <style>
+    #app {
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        color: #2c3e50;
+        margin-top: 60px;
+    }
+    </style>
+    ```
+2. Crear componente **03vue_cli\src\components\Titulo.vue**:
+    ```vue
+    <template>
+        <h1>{{ texto }}</h1>
+    </template>
+
+    <script>
+    export default {
+        name: 'Titulo',
+        /* props: ['texto'] */  // Esta es una forma de capturar los props como array
+        // Forma de capturar los props pero ahora como objetos:
+        props: {
+            texto: String
+        }
+
+    }
+    </script>
+
+    <style scoped>
+        h1 {
+            color: peru;
+        }
+    </style>
+    ```
+
 ### 37. Refuerzo sobre componentes
-7 min
+1. Crear componente **03vue_cli\src\components\Cuenta.vue**:
+    ```vue
+    <template>
+        <h2>Tipo de cuenta: {{ cuenta }}</h2>
+        <h2>Saldo: {{ saldo }}</h2>
+        <h2>Estado: {{ estado ? 'Activa' : 'Desactivada' }}</h2>
+        <div v-for="(servicio, item) in servicios" :key="item">
+            {{ item + 1 }} - {{ servicio }}
+        </div>
+    </template>
+
+    <script>
+    export default {
+        data() {
+            return {
+                saldo: 1000,
+                cuenta: 'Corriente',
+                estado: true,
+                servicios: ['giro', 'abono', 'transferencia']
+            }
+        },
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+2. Modificar el componente principal **03vue_cli\src\App.vue** para incorporar el nuevo componente **Cuenta**:
+    ```vue
+    <template>
+        ≡
+        <Cuenta />
+    </template>
+
+    <script>
+    import Titulo from './components/Titulo'
+    import Cuenta from './components/Cuenta'
+
+    export default {
+        name: 'App',
+        components: {
+            Titulo,
+            Cuenta
+        }
+    }
+    </script>
+    ≡
+    ```
+
 ### 38. Comunicación entre componentes (parte 1)
-5 min
+1. Modificar componente **03vue_cli\src\components\Cuenta.vue**:
+    ```vue
+    <template>
+        <h2>Tipo de cuenta: {{ cuenta }}</h2>
+        <h2>Saldo: {{ saldo }}</h2>
+        <h2>Estado: {{ estado ? 'Activa' : 'Desactivada' }}</h2>
+        <div v-for="(servicio, item) in servicios" :key="item">
+            {{ item + 1 }} - {{ servicio }}
+        </div>
+        <AccionSaldo />
+        <AccionSaldo />
+    </template>
+
+    <script>
+    import AccionSaldo from './AccionSaldo'
+    export default {
+        components: {
+            AccionSaldo
+        },
+        data() {
+            return {
+                saldo: 1000,
+                cuenta: 'Corriente',
+                estado: true,
+                servicios: ['giro', 'abono', 'transferencia']
+            }
+        },
+        methods: {
+            aumentar(){
+                this.saldo += 100
+            },
+            disminuir(){
+                this.saldo -= 100
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+2. Crear componente **03vue_cli\src\components\AccionSaldo.vue**:
+    ```vue
+    <template>
+        <button>Disminuir/Aumentar saldo</button>
+    </template>
+
+    <script>
+    export default {
+
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
 ### 39. Comunicación entre componentes (parte 2)
-2 min
+1. Modificar componente **03vue_cli\src\components\Cuenta.vue**:
+    ```vue
+    <template>
+        ≡
+        <AccionSaldo texto="Aumentar saldo" />
+        <AccionSaldo texto="Disminuir saldo" />
+    </template>
+    ≡
+    ```
+2. Modificar componente **03vue_cli\src\components\AccionSaldo.vue**:
+    ```vue
+    <template>
+        <button>{{ texto }}</button>
+    </template>
+
+    <script>
+    export default {
+        props: {
+            texto: String
+        }
+    }
+    </script>
+    ≡
+    ```
+
 ### 40. Custom Events (emit): Comunicación del hijo al padre (componentes)
-8 min
+1. Modificar componente **03vue_cli\src\components\Cuenta.vue**:
+    ```vue
+    <template>
+        <h2>Tipo de cuenta: {{ cuenta }}</h2>
+        <h2>Saldo: {{ saldo }}</h2>
+        <h2>Estado: {{ estado ? 'Activa' : 'Desactivada' }}</h2>
+        <div v-for="(servicio, item) in servicios" :key="item">
+            {{ item + 1 }} - {{ servicio }}
+        </div>
+        <AccionSaldo texto="Aumentar saldo" @accion="aumentar" />
+        <AccionSaldo texto="Disminuir saldo" @accion="disminuir" />
+    </template>
+
+    <script>
+    import AccionSaldo from './AccionSaldo'
+    export default {
+        components: {
+            AccionSaldo
+        },
+        data() {
+            return {
+                saldo: 1000,
+                cuenta: 'Corriente',
+                estado: true,
+                servicios: ['giro', 'abono', 'transferencia']
+            }
+        },
+        methods: {
+            aumentar(){
+                this.saldo += 100
+            },
+            disminuir(){
+                if(this.saldo === 0){
+                    alert('Saldo agotado')
+                    return
+                }
+                this.saldo -= 100
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+2. Modificar componente **03vue_cli\src\components\AccionSaldo.vue**:
+    ```vue
+    <template>
+        <button @click="accion">{{ texto }}</button>
+    </template>
+
+    <script>
+    export default {
+        props: {
+            texto: String
+        },
+        methods: {
+            accion() {
+                this.$emit('accion')
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
 ### 41. Resolviendo tarea "bloquear botón"
-4 min
+1. Modificar componente **03vue_cli\src\components\Cuenta.vue**:
+    ```vue
+    <template>
+        <h2>Tipo de cuenta: {{ cuenta }}</h2>
+        <h2>Saldo: {{ saldo }}</h2>
+        <h2>Estado: {{ estado ? 'Activa' : 'Desactivada' }}</h2>
+        <div v-for="(servicio, item) in servicios" :key="item">
+            {{ item + 1 }} - {{ servicio }}
+        </div>
+        <AccionSaldo texto="Aumentar saldo" @accion="aumentar" />
+        <AccionSaldo texto="Disminuir saldo" @accion="disminuir" :desactivar="desactivar" />
+    </template>
+
+    <script>
+    import AccionSaldo from './AccionSaldo'
+    export default {
+        components: {
+            AccionSaldo
+        },
+        data() {
+            return {
+                saldo: 1000,
+                cuenta: 'Corriente',
+                estado: true,
+                servicios: ['giro', 'abono', 'transferencia'],
+                desactivar: false
+            }
+        },
+        methods: {
+            aumentar(){
+                this.saldo += 100
+                this.desactivar = false
+            },
+            disminuir(){
+                if(this.saldo === 0){
+                    this.desactivar = true
+                    alert('Saldo agotado')
+                    return
+                }
+                this.saldo -= 100
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+2. Modificar componente **03vue_cli\src\components\AccionSaldo.vue**:
+    ```vue
+    <template>
+        <button @click="accion" :disabled="desactivar">{{ texto }}</button>
+    </template>
+
+    <script>
+    export default {
+        props: {
+            texto: String,
+            desactivar: {
+                type: Boolean,
+                default: false
+            }
+        },
+        methods: {
+            accion() {
+                this.$emit('accion')
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
 ### 42. Deploy a Hosting Gratuito
-5 min
+1. Compilar el proyecto **03vue_cli** para deploy:
+    + $ npm run build
+    + **Nota**: al terminar de compilar el proyecto se generará una carpeta de nombre **dist** lista para alojar en un servidor
+2. Ir a la página de **Netlify** y subir la carpeta **dist**.
+
 ### 43. Archivos Terminados de esta sección
-1 min
++ **Contenido**: código fuente de la sección.
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Vue CLI 4 - Acelerando el desarrollo web"
++ $ git push -u origin main
+
+
+## Vue Roiter | Aprendiendo a trabajar con rutas
 ### 44. Introducción a Vue Router
-1 min
+
+    ≡
+    ```vue
+    ```
+
+
 ### 45. Primeros pasos con Vue Router
 6 min
 ### 46. Router-Link Router-View
