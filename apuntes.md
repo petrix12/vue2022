@@ -1025,44 +1025,443 @@
 
 ## Vue Roiter | Aprendiendo a trabajar con rutas
 ### 44. Introducción a Vue Router
++ https://bluuweb.github.io/vue-udemy/03-router
++ **Contenido**: sobre Vue Router.
+
+### 45. Primeros pasos con Vue Router
+1. Crear proyecto **04vue_router**:
+    + $ vue create 04vue_router
+    + Seleccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+        + (*) Router
+    + Seleccionar: 3.x
+    + ? Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n): y
+    + Seleccionar: In dedicated config files
+    + ? Save this as a preset for future projects? (y/N): n
+2. Ejecutar proyecto **04vue_router**:
+    + $ cd 04vue_router
+    + $ npm run serve
+
+### 46. Router-Link Router-View
++ **Contenido**: análisis de la estructura del componente principal **04vue_router\src\App.vue**.
+
+### 47. Analizando configuración de Router
++ **Contenido**: análisis de la estructura del archivo de rutas **04vue_router\src\router\index.js**.
+
+### 48. View - Primeros pasos
+1. Crear vista **04vue_router\src\views\Blog.vue**:
+    ```vue
+    <template>
+        <h1>Blog</h1>
+    </template>
+
+    <script>
+    export default {
+
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+2. Modificar archivo de rutas **04vue_router\src\router\index.js**:
+    ```js
+    ≡
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: Home
+        },
+        {
+            path: '/about',
+            name: 'About',
+            component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+        },
+        {
+            path: '/blog',
+            name: 'Blog',
+            component: () => import('../views/Blog.vue')
+        }
+    ]
+    ≡
+    ```
+3. Modificar componente principal **04vue_router\src\App.vue**:
+    ```vue
+    <template>
+        <div id="nav">
+            <router-link to="/">Home</router-link> |
+            <router-link to="/about">About</router-link> |
+            <router-link to="/blog">Blog</router-link>
+        </div>
+        <router-view/>
+    </template>
+    ≡
+    ```
+
+### 49. Componentes vs View
+1. Crear componente **04vue_router\src\components\Titulo.vue**:
+    ```vue
+    <template>
+        <h1>{{ texto }}</h1>
+    </template>
+
+    <script>
+    export default {
+        props: {
+            texto: String
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+2. Modificar vista **04vue_router\src\views\Blog.vue**:
+    ```vue
+    <template>
+        <Titulo texto="Título del Blog" />
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        components: {
+            Titulo
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+3. Modificar vista **04vue_router\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <img alt="Vue logo" src="../assets/logo.png">
+        <Titulo texto="Página de inicio" />
+        </div>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        name: 'Home',
+        components: {
+            Titulo
+        }
+    }
+    </script>
+    ```
+4. Modificar vista **04vue_router\src\views\About.vue**:
+    ```vue
+    <template>
+        <div class="about">
+            <Titulo texto="Título de About" />
+        </div>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        components: {
+            Titulo
+        }
+    }
+    </script>
+    ```
+
+### 50. Rutas con Parámetros
+1. Crear vista **04vue_router\src\views\Articulo.vue**:
+    ```vue
+    <template>
+        <Titulo texto="Ruta con parámetros" />
+        <h2>Parámetro: {{ $route.params.id }}</h2>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        components: {
+            Titulo
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+2. Modificar archivo de rutas **04vue_router\src\router\index.js**:
+    ```js
+    ≡
+    const routes = [
+        ≡
+        {
+            path: '/blog/:id',
+            name: 'Articulo',
+            component: () => import('../views/Articulo.vue')
+        }							
+    ]
+    ≡
+    ```
+
+### 51. Práctica: Fetch ( consumir API )
++ https://jsonplaceholder.typicode.com
++ https://jsonplaceholder.typicode.com/posts
+1. Modificar vista **04vue_router\src\views\Blog.vue**:
+    ```vue
+    <template>
+        <Titulo texto="Título del Blog" />
+        <button @click="consumirApi">Consumir API</button>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        components: {
+            Titulo
+        },
+        data() {
+            return {
+                posts: []
+            }
+        },
+        methods: {
+            async consumirApi(){
+                try {
+                    const data = await fetch('https://jsonplaceholder.typicode.com/posts')
+                    const array = await data.json()
+                    console.log(array)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
+### 52. Práctica: Pintar títulos de blog
+1. Modificar vista **04vue_router\src\views\Blog.vue**:
+    ```vue
+    <template>
+        <Titulo texto="Título del Blog" />
+        <button @click="consumirApi">Consumir API</button>
+        <div v-for="post in posts" :key="post.id">
+            {{ post.id }} - {{ post.title }}
+        </div>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        components: {
+            Titulo
+        },
+        data() {
+            return {
+                posts: []
+            }
+        },
+        methods: {
+            async consumirApi(){
+                try {
+                    const data = await fetch('https://jsonplaceholder.typicode.com/posts')
+                    const array = await data.json()
+                    console.log(array)
+                    this.posts = array
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
+### 53. Created: Ciclo de vida de Vue
++ https://v3.vuejs.org/guide/instance.html#lifecycle-diagram
+1. Modificar vista **04vue_router\src\views\Blog.vue**:
+    ```vue
+    <template>
+        <Titulo texto="Título del Blog" />
+        <!-- <button @click="consumirApi">Consumir API</button> -->
+        <div v-for="post in posts" :key="post.id">
+            {{ post.id }} - {{ post.title }}
+        </div>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        ≡
+        created() {
+            this.consumirApi()
+        }
+    }
+    </script>
+    ≡
+    ```
+
+### 54. Práctica: Rutas con Parámetros (parte 1)
+1. Modificar vista **04vue_router\src\views\Blog.vue**:
+    ```vue
+    <template>
+        <Titulo texto="Título del Blog" />
+        <div v-for="post in posts" :key="post.id">
+            <router-link :to="`/blog/${post.id}`">
+                {{ post.id }} - {{ post.title }}
+            </router-link>
+        </div>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        components: {
+            Titulo
+        },
+        data() {
+            return {
+                posts: []
+            }
+        },
+        methods: {
+            async consumirApi(){
+                try {
+                    const data = await fetch('https://jsonplaceholder.typicode.com/posts')
+                    const array = await data.json()
+                    console.log(array)
+                    this.posts = array
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        },
+        created() {
+            this.consumirApi()
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
+### 55. Práctica: Rutas con Parámetros (parte 2)
+1. Modificar vista **04vue_router\src\views\Articulo.vue**:
+    ```vue
+    <template>
+        <Titulo texto="Ruta con parámetros" />
+        <h2>Parámetro: {{ $route.params.id }}</h2>
+        <h3>{{ articulo.id }} - {{ articulo.title }}</h3>
+        <p>{{ articulo.body }}</p>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    export default {
+        components: {
+            Titulo
+        },
+        data() {
+            return {
+                articulo: {}
+            }
+        },
+        methods: {
+            async consumirArticulo(){
+                try {
+                    const data = await fetch(`https://jsonplaceholder.typicode.com/posts/${this.$route.params.id}`)
+                    const articulo = await data.json()
+                    console.log(articulo)
+                    this.articulo = articulo
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        },
+        created(){
+            this.consumirArticulo()
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
+### 56. Deploy a Hosting Gratuito
+1. Compilar el proyecto **04vue_router** para deploy:
+    + $ npm run build
+    + **Nota**: al terminar de compilar el proyecto se generará una carpeta de nombre **dist** lista para alojar en un servidor
+2. Ir a la página de **Netlify** y subir la carpeta **dist**.
+
+### 57. Refresh 404 Hosting Netlify
++ **Nota**: Al hacer refresh en su sitio web desplegado en Netlify con el modo History de vue, tira un 404.
++ **Solución**:
+    + Agregar archivo a su carpeta "public" con el siguiente nombre: _redirects
+    + El código de este archivo será: /* /index.html  200
+    + Compilar nuevamente con npm run build y subir proyecto a Netlify.
++ Aquí más info:
+    + https://docs.netlify.com/routing/redirects/rewrites-proxies/#history-pushstate-and-single-page-apps
+    + https://stackoverflow.com/questions/55990467/catch-all-redirect-for-create-react-app-in-netlify
+
+### 58. Refresh 404 Hosting compartido
++ Error 404 al refrescar la página - Sección 6:VUE ROUTER - Video 55 y 56:
+    + https://router.vuejs.org/guide/essentials/history-mode.html
+    + https://stackoverflow.com/questions/36399319/vue-router-return-404-when-revisit-to-the-url
+    + Los pasos aplicados para corregir el error fueron los siguientes:
+        + Agregar archivo a su carpeta "public" con el siguiente nombre: **.htaccess**:
+        ```htaccess
+        <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteBase /
+            RewriteRule ^index\.html$ - [L]
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteCond %{REQUEST_FILENAME} !-d
+            RewriteRule . /index.html [L]
+        </IfModule>        
+        ```
+        + Compilar nuevamente con npm run build y subir proyecto en el hosting empleado.
+        + **Nota**: se utilizó hostgator como hosting.
+
+### 59. Archivos Terminados de esta sección
++ Recursos de esta sección: **00recursos\Router.zip**.
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Vue Roiter | Aprendiendo a trabajar con rutas"
++ $ git push -u origin main
+
+
+## VUEX - Fundamentos
+### 60. Introducción a Sección Vuex
+
+
 
     ≡
     ```vue
     ```
 
 
-### 45. Primeros pasos con Vue Router
-6 min
-### 46. Router-Link Router-View
-3 min
-### 47. Analizando configuración de Router
-2 min
-### 48. View - Primeros pasos
-3 min
-### 49. Componentes vs View
-5 min
-### 50. Rutas con Parámetros
-5 min
-### 51. Práctica: Fetch ( consumir API )
-7 min
-### 52. Práctica: Pintar títulos de blog
-2 min
-### 53. Created: Ciclo de vida de Vue
-5 min
-### 54. Práctica: Rutas con Parámetros (parte 1)
-4 min
-### 55. Práctica: Rutas con Parámetros (parte 2)
-6 min
-### 56. Deploy a Hosting Gratuito
-2 min
-### 57. Refresh 404 Hosting Netlify
-1 min
-### 58. Refresh 404 Hosting compartido
-1 min
-### 59. Archivos Terminados de esta sección
-1 min
-### 60. Introducción a Sección Vuex
-1 min
 ### 61. ¿Qué es Vuex?
 2 min
 ### 62. Más información sobre Vuex
