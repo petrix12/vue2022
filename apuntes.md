@@ -1454,6 +1454,489 @@
 
 ## VUEX - Fundamentos
 ### 60. Introducción a Sección Vuex
++ https://bluuweb.github.io/vue-udemy/04-vuex
++ **Contenido**: sobre Vuex.
+
+### 61. ¿Qué es Vuex?
++ **Contenido**: sobre Vuex.
+
+### 62. Más información sobre Vuex
++ Guía sobre Vuex: https://vuejsdevelopers.com
+
+### 63. Instalación de Vuex
+1. Crear proyecto **05vuex**:
+    + $ vue create 05vuex
+    + Seleccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+        + (*) Router
+        + (*) Vuex
+    + Seleccionar: 3.x
+    + ? Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n): y
+    + Seleccionar: In dedicated config files
+    + ? Save this as a preset for future projects? (y/N): n
+2. Crear proyecto **05vuex**:
+    + $ cd 05vuex
+    + $ npm run serve
+
+### 64. State: Primeros pasos
+1. Modificar tienda **05vuex\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            contador: 100
+        },
+        mutations: {
+        },
+        actions: {
+        },
+        modules: {
+        }
+    })
+    ```
+2. Modificar vista **05vuex\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <img alt="Vue logo" src="../assets/logo.png">
+            <h1>Contador: {{ $store.state.contador }}</h1>
+        </div>
+    </template>
+
+    <script>
+
+    export default {
+        name: 'Home',
+        components: {
+        }
+    }
+    </script>
+    ```
+3. Modificar vista **05vuex\src\views\About.vue**:
+    ```vue
+    <template>
+        <div class="about">
+            <h1>This is an about page</h1>
+            <h1>Contador: {{ $store.state.contador }}</h1>
+        </div>
+    </template>
+    ```
+
+### 65. MapState
+1. Modificar vista **05vuex\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <h1>Contador: {{ contador }}</h1>
+        </div>
+    </template>
+
+    <script>
+    import { mapState } from 'vuex'
+
+    export default {
+        name: 'Home',
+        components: {
+        },
+        computed: {
+            ...mapState(['contador'])
+        }
+    }
+    </script>  
+    ```
+
+### 66. Propiedades computadas
+1. Modificar vista **05vuex\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <h1 :style="colorContador">{{ titulo }}: {{ contador }}</h1>
+        </div>
+    </template>
+
+    <script>
+    import { mapState } from 'vuex'
+
+    export default {
+        name: 'Home',
+        components: {
+        },
+        data() {
+            return {
+                titulo: 'Contador Vuex'
+            }
+        },
+        computed: {
+            ...mapState(['contador']),
+            colorContador(){
+                return this.contador > 100 ? {'color': 'green'} : {'color': 'red'}
+            }
+        }
+    }
+    </script>
+    ```
+
+### 67. Mutations y MapMutation
+1. Modificar tienda **05vuex\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            contador: 50
+        },
+        mutations: {
+            incrementar(state) {
+                state.contador += 10
+            }
+        },
+        actions: {
+        },
+        modules: {
+        }
+    })
+    ```
+2. Modificar componente **05vuex\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <h1 :style="colorContador">{{ titulo }}: {{ contador }}</h1>
+        </div>
+        <button @click="incrementar">Aumentar</button>
+    </template>
+
+    <script>
+    import { mapState, mapMutations } from 'vuex'
+
+    export default {
+        name: 'Home',
+        components: {
+        },
+        data() {
+            return {
+                titulo: 'Contador Vuex'
+            }
+        },
+        computed: {
+            ...mapState(['contador']),
+            colorContador(){
+                return this.contador > 100 ? {'color': 'green'} : {'color': 'red'}
+            }
+        },
+        methods: {
+            ...mapMutations(['incrementar'])
+        }
+    }
+    </script>
+    ```
+
+### 68. Actions y MapAction
+1. Modificar tienda **05vuex\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            contador: 50
+        },
+        mutations: {
+            incrementar(state) {
+                state.contador += 10
+            }
+        },
+        actions: {
+            accionIncrementar({ commit }){
+                commit('incrementar')
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+2. Modificar vista **05vuex\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <h1 :style="colorContador">{{ titulo }}: {{ contador }}</h1>
+        </div>
+        <button @click="accionIncrementar">Aumentar</button>
+    </template>
+
+    <script>
+    import { mapState, mapMutations, mapActions } from 'vuex'
+
+    export default {
+        name: 'Home',
+        components: {
+        },
+        data() {
+            return {
+                titulo: 'Contador Vuex'
+            }
+        },
+        computed: {
+            ...mapState(['contador']),
+            colorContador(){
+                return this.contador > 100 ? {'color': 'green'} : {'color': 'red'}
+            }
+        },
+        methods: {
+            ...mapMutations(['incrementar']),
+            ...mapActions(['accionIncrementar'])
+        }
+    }
+    </script>
+    ```
+
+### 69. Práctica con componentes
+1. Crear componente **05vuex\src\components\BtnDisminuir.vue**:
+    ```vue
+    <template>
+        <button @click="accionDisminuir">Disminuir</button>
+    </template>
+
+    <script>
+    import { mapActions } from 'vuex'
+    export default {  
+        name: 'BtnDisminuir', 
+        methods: {
+            ...mapActions(['accionDisminuir'])
+        }
+    }
+    </script>
+    ```
+2. Modificar vist **05vuex\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <h1 :style="colorContador">{{ titulo }}: {{ contador }}</h1>
+        </div>
+        <button @click="accionIncrementar">Aumentar</button>
+        <BtnDisminuir />
+    </template>
+
+    <script>
+    import { mapState, mapMutations, mapActions } from 'vuex'
+    import BtnDisminuir from '../components/BtnDisminuir'
+
+    export default {
+        name: 'Home',
+        components: {
+            BtnDisminuir
+        },
+        ≡
+    }
+    </script>
+    ```
+3. Modificar tienda **05vuex\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            contador: 50
+        },
+        mutations: {
+            incrementar(state) {
+                state.contador += 10
+            },
+            disminuir(state) {
+                state.contador -= 10
+            }
+        },
+        actions: {
+            accionIncrementar({ commit }){
+                commit('incrementar')
+            },
+            accionDisminuir({ commit }){
+                commit('disminuir')
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+
+### 70. Parámetros en Vuex
+1. Modificar componente **05vuex\src\components\BtnDisminuir.vue**:
+    ```vue
+    <template>
+        <button @click="accionDisminuir(50)">Disminuir</button>
+    </template>
+    ≡
+    ```
+2. Modificar tienda **05vuex\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            contador: 50
+        },
+        mutations: {
+            incrementar(state) {
+                state.contador += 10
+            },
+            disminuir(state, payload) {
+                state.contador -= payload
+            }
+        },
+        actions: {
+            accionIncrementar({ commit }){
+                commit('incrementar')
+            },
+            accionDisminuir({ commit }, numero){
+                commit('disminuir', numero)
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+
+### 71. Props en botón aumentar/disminuir
+1. Crear componente **05vuex\src\components\BotonAccion.vue**:
+    ```vue
+    <template>
+        <button>{{ textoBoton }}</button>
+    </template>
+
+    <script>
+    export default {
+        props: {
+            estado: Boolean
+        },
+        computed: {
+            textoBoton() {
+                return this.estado ? 'Aumentar' : 'Disminuir'
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **05vuex\src\views\Home.vue**:
+    ```vue
+    <template>
+        ≡
+        <BtnDisminuir />
+
+        <hr>
+        <BotonAccion :estado="true" />
+        <BotonAccion :estado="false" />
+    </template>
+
+    <script>
+    ≡
+    import BotonAccion from '../components/BotonAccion'
+
+    export default {
+        name: 'Home',
+        components: {
+            BtnDisminuir,
+            BotonAccion
+        },
+        ≡
+    }
+    </script>
+    ```
+
+### 72. Actions y Mutations en botonAccion
+1. Modificar tienda **05vuex\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            contador: 50
+        },
+        mutations: {
+            incrementar(state, payload) {
+                state.contador += payload
+            },
+            disminuir(state, payload) {
+                state.contador -= payload
+            }
+        },
+        actions: {
+            accionIncrementar({ commit }){
+                commit('incrementar', 10)
+            },
+            accionDisminuir({ commit }, numero){
+                commit('disminuir', numero)
+            },
+            accionBoton({ commit }, objeto){
+                if (objeto.estado){
+                    commit('incrementar', objeto.numero)
+                } else {
+                    commit('disminuir', objeto.numero)
+                }
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+2. Modificar componente **05vuex\src\components\BotonAccion.vue**:
+    ```vue
+    <template>
+        <button @click="accionBoton({ estado: estado, numero: 15 })">{{ textoBoton }}</button>
+    </template>
+
+    <script>
+    import { mapActions } from 'vuex'
+    export default {
+        props: {
+            estado: Boolean
+        },
+        computed: {
+            textoBoton() {
+                return this.estado ? 'Aumentar' : 'Disminuir'
+            }
+        },
+        methods: {
+            ...mapActions(['accionBoton'])
+        }
+    }
+    </script>
+    ```
+
+### 73. V-model: Comunicación directa entre input y data
+1. Modificar vista **05vuex\src\views\About.vue05vuex\src\views\About.vue**:
+    ```vue
+    <template>
+        <div class="about">
+            <h1>This is an about page</h1>
+            <h1>Contador: {{ $store.state.contador }}</h1>
+            <input type="text" v-model="texto">
+            <h2>{{ texto }}</h2>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        data() {
+            return {
+                texto: ''
+            }
+        },
+    }
+    </script>
+    ```
+
+### 74. Archivos Terminados de esta sección
++ Código fuente de la sección: 00recursos\Vuex.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "VUEX - Fundamentos"
++ $ git push -u origin main
+
+
+## Forumularios (v-model)
+### 75. Presentación Formularios con Vue.js
 
 
 
@@ -1462,36 +1945,8 @@
     ```
 
 
-### 61. ¿Qué es Vuex?
-2 min
-### 62. Más información sobre Vuex
-1 min
-### 63. Instalación de Vuex
-3 min
-### 64. State: Primeros pasos
-4 min
-### 65. MapState
-5 min
-### 66. Propiedades computadas
-5 min
-### 67. Mutations y MapMutation
-4 min
-### 68. Actions y MapAction
-4 min
-### 69. Práctica con componentes
-5 min
-### 70. Parámetros en Vuex
-3 min
-### 71. Props en botón aumentar/disminuir
-5 min
-### 72. Actions y Mutations en botonAccion
-9 min
-### 73. V-model: Comunicación directa entre input y data
-2 min
-### 74. Archivos Terminados de esta sección
-1 min
-### 75. Presentación Formularios con Vue.js
-1 min
+
+
 ### 76. Instalación de un nuevo proyecto
 2 min
 ### 77. Atención muy importante!
