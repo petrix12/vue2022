@@ -16,18 +16,18 @@
     + $ git push -u origin main
 
 
-## Introducción
+## Sección 1: Introducción
 ### 1. Presentación al curso Vue - Vuex - VueRouter - Firebase
 + **Contenido**: Presentación del curso.
 
 
-## ¡Importante! por favor ver este video :)
+## Sección 2: ¡Importante! por favor ver este video :)
 ### 2. Actualización del curso de Vue 2 a Vue 3
 + https://bluuweb.github.io/vue-udemy/01-fundamentos
 + **Contenido**: sobre Vue 2 y Vue 3.
 
 
-## Fundamentos de Javascript (sección opcional)
+## Sección 3: Fundamentos de Javascript (sección opcional)
 ### 3. Introducción a Fundamentos de Javascript
 + https://bluuweb.github.io/javascript/fundamentos
 + **Contenido**: sobre los fundamentos de JavaScript.
@@ -134,7 +134,7 @@
 + $ git push -u origin main
 
 
-## Vue JS 3! - Fundamentos
+## Sección 4: Vue JS 3! - Fundamentos
 ### 14. Introducción
 + https://bluuweb.github.io/vue-udemy/01-fundamentos
 
@@ -589,7 +589,7 @@
 + $ git push -u origin main
 
 
-## Vue CLI 4 - Acelerando el desarrollo web
+## Sección 5: Vue CLI 4 - Acelerando el desarrollo web
 ### 33. Mi primer proyecto con Vue Cli
 + https://bluuweb.github.io/vue-udemy/02-cli
 1. Descargar e instalar [Node.js](https://nodejs.org/es).
@@ -1023,7 +1023,7 @@
 + $ git push -u origin main
 
 
-## Vue Roiter | Aprendiendo a trabajar con rutas
+## Sección 6: Vue Roiter | Aprendiendo a trabajar con rutas
 ### 44. Introducción a Vue Router
 + https://bluuweb.github.io/vue-udemy/03-router
 + **Contenido**: sobre Vue Router.
@@ -1452,7 +1452,7 @@
 + $ git push -u origin main
 
 
-## VUEX - Fundamentos
+## Sección 7: VUEX - Fundamentos
 ### 60. Introducción a Sección Vuex
 + https://bluuweb.github.io/vue-udemy/04-vuex
 + **Contenido**: sobre Vuex.
@@ -1935,8 +1935,374 @@
 + $ git push -u origin main
 
 
-## Forumularios (v-model)
+## Sección 8: Forumularios (v-model)
 ### 75. Presentación Formularios con Vue.js
++ https://bluuweb.github.io/vue-udemy/05-form
++ **Contenido**: sobre el trabajo con formularios en Vue.js
+
+### 76. Instalación de un nuevo proyecto
++ https://bluuweb.github.io/vue-udemy/05-form
+1. Crear proyecto **06formulario**:
+    + $ vue create 06formulario
+    + Seleccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+        + (*) Router
+        + (*) Vuex
+    + Seleccionar: 3.x
+    + ? Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n): y
+    + Seleccionar: In dedicated config files
+    + ? Save this as a preset for future projects? (y/N): n
+2. Ejecutar proyecto :
+    + $ cd 06formulario
+    + $ npm run serve
+3. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            Inicio
+        </div>
+    </template>
+
+    <script>
+
+    export default {
+        name: 'Home',
+        components: {
+        }
+    }
+    </script>
+    ```
+
+### 77. Atención muy importante!
++ **Atención**: Está sección se trabaja con **Bootstrap versión 4** y si visitan la web ya está disponible la **versión 5**.
++ Documentación oficial de Bootstrap y su CDN: **https://getbootstrap.com/docs/4.5/getting-started/introduction**.
++ Algunas clases cambiaron con **Bootstrap 5** por lo que se recomienda trabajar con **Bootstrap 4**.
++ Tutorial de **Bootstrap 5** gratuito en Youtube (creado por mi persona Ignacio Gutiérrez): **https://youtu.be/1kNwZbRiVcQ**.
+
+### 78. Navbar de Bootstrap 4
+1. Modificar **06formulario\public\index.html** para añadir CDN de **Bootstrap 4**:
+    ```html
+    <!DOCTYPE html>
+    <html lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+        <title><%= htmlWebpackPlugin.options.title %></title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    </head>
+    <body>
+        <noscript>
+            <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+        </noscript>
+        <div id="app"></div>
+        <!-- built files will be auto injected -->
+    </body>
+    </html>
+    ```
+    + CDN Bootstrap 4: https://getbootstrap.com/docs/4.6/getting-started/introduction
+2. Modificar componente principal **06formulario\src\App.vue**:
+    ```vue
+    <template>
+        <Navbar />
+        <div class="container">
+            <router-view/>
+        </div>
+    </template>
+
+    <script>
+    import Navbar from './components/Navbar'
+    export default {
+        components: {
+            Navbar
+        }
+    }
+    </script>
+    ```
+3. Eliminar archivos:
+    + 06formulario\src\components\HelloWorld.vue
+    + 06formulario\src\assets\logo.png
+4. Crear componente **06formulario\src\components\Navbar.vue**:
+    ```vue
+    <template>
+        <div class="navbar navbar-dark bg-dark">
+            <router-link to="/" class="navbar-brand">
+                Formulario
+            </router-link>
+            <div class="d-flex">
+                <router-link to="/" class="btn btn-dark">
+                    Tareas
+                </router-link>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    export default {
+
+    }
+    </script>
+    ```
+
+### 79. v-model: text
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form>
+            <input type="text" class="form-control my-2" placeholder="Ingrese nombre" v-model="tarea.nombre">
+        </form>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+
+    export default {
+        name: 'Home',
+        components: {
+        },
+        data() {
+            return {
+                tarea: {
+                    nombre: ''
+                }
+            }
+        }
+    }
+    </script>
+    ```
+
+### 80. v-model: checkbox
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form>
+            <input type="text" class="form-control my-2" placeholder="Ingrese nombre" v-model="tarea.nombre">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="check-1" value="JavaScript" v-model="tarea.categorias">
+                <label class="form-check-label" for="check-1">JavaScript</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="check-2" value="Node.js" v-model="tarea.categorias">
+                <label class="form-check-label" for="check-2">Node.js</label>
+            </div>
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+
+    export default {
+        name: 'Home',
+        components: {
+        },
+        data() {
+            return {
+                tarea: {
+                    nombre: '',
+                    categorias: []
+                }
+            }
+        }
+    }
+    </script>
+    ```
+
+### 81. v-model: radio
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form>
+            ≡
+            <div class="mt-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="radio-1" value="Urgente" v-model="tarea.estado">
+                    <label class="form-check-label" for="radio-1">Urgente</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="radio-2" value="Rilax" v-model="tarea.estado">
+                    <label class="form-check-label" for="radio-2">Rilax</label>
+                </div>
+            </div>
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+
+    export default {
+        name: 'Home',
+        components: {
+        },
+        data() {
+            return {
+                tarea: {
+                    nombre: '',
+                    categorias: [],
+                    estado: ''
+                }
+            }
+        }
+    }
+    </script>
+    ```
+
+### 82. v-model: number
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form>
+            ≡
+            <div class="mt-2">
+                <input type="number" v-model.number="tarea.numero" class="form-control">
+            </div>
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+
+    export default {
+        ≡
+        data() {
+            return {
+                tarea: {
+                    ≡
+                    numero: 0
+                }
+            }
+        }
+    }
+    </script>
+    ```
+
+### 83. trim y submit
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            <input type="text" class="form-control my-2" placeholder="Ingrese nombre" v-model.trim="tarea.nombre">
+            ≡
+            <button class="btn btn-dark mt-2 btn-block" type="submit">Procesar</button>
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+
+    export default {
+        ≡
+        methods: {
+            procesarFormulario() {
+                console.log(this.tarea)
+            }
+        }
+    }
+    </script>
+    ```
+
+### 84. Validación
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            ≡
+            <button class="btn btn-dark mt-2 btn-block" type="submit" :disabled="false">Procesar</button>
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+
+    export default {
+        ≡
+        methods: {
+            procesarFormulario() {
+                console.log(this.tarea)
+                if(this.tarea.nombre.trim() === ''){
+                    console.log('Campo vacío')
+                    return
+                }
+            }
+        }
+    }
+    </script>
+    ```
+
+### 85. Bloquear botón submit
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            ≡
+            <button class="btn btn-dark mt-2 btn-block" type="submit" :disabled="bloquear">Procesar</button>
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+
+    export default {
+        ≡
+        computed: {
+            bloquear() {
+                return this.tarea.nombre.trim() === '' ? true : false
+            }
+        }
+    }
+    </script>
+    ```
+
+### 86. Limpiar campos
+1. Modificar vista **06formulario\src\views\Home.vue**:
+    ```vue
+    ≡
+    <script>
+
+    export default {
+        ≡
+        methods: {
+            procesarFormulario() {
+                console.log(this.tarea)
+                if(this.tarea.nombre.trim() === ''){
+                    console.log('Campo vacío')
+                    return
+                }
+                // enviar los datos
+                this.tarea = {
+                    nombre: '',
+                    categorias: [],
+                    estado: '',
+                    numero: 0
+                }
+            }
+        },
+        ≡
+    }
+    </script>
+    ```
+
+### 87. Archivos Terminados de esta sección
++ Código fuente de la sección: 00recursos\Formularios.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Forumularios (v-model)"
++ $ git push -u origin main
+
+
+## Sección 9: CRUD + LocalStorage
+### 88. Presentación CRUD + LocalStorage
+
+
 
 
 
@@ -1947,32 +2313,6 @@
 
 
 
-### 76. Instalación de un nuevo proyecto
-2 min
-### 77. Atención muy importante!
-1 min
-### 78. Navbar de Bootstrap 4
-3 min
-### 79. v-model: text
-3 min
-### 80. v-model: checkbox
-4 min
-### 81. v-model: radio
-3 min
-### 82. v-model: number
-2 min
-### 83. trim y submit
-4 min
-### 84. Validación
-3 min
-### 85. Bloquear botón submit
-1 min
-### 86. Limpiar campos
-1 min
-### 87. Archivos Terminados de esta sección
-1 min
-### 88. Presentación CRUD + LocalStorage
-1 min
 ### 89. Clonar proyecto anterior
 2 min
 ### 90. Separar inputs en un componente
