@@ -2301,8 +2301,584 @@
 
 ## Sección 9: CRUD + LocalStorage
 ### 88. Presentación CRUD + LocalStorage
++ https://bluuweb.github.io/vue-udemy
++ **Contenido**: sobre lo que haremos en esta sección.
+
+### 89. Clonar proyecto anterior
+1. Crear proyecto **07formulario_crud** a partir del proyecto **06formulario**:
+    + Realizar una copia del proyecto **06formulario** sin el directorio **06formulario\node_modules** y renombrarlo **07formulario_crud**.
+2. Instalar las dependencias del nuevo proyecto **07formulario_crud** y ejecutarlo:
+    + $ cd 07formulario_crud
+    + $ npm i
+    + $ npm run serve
+
+### 90. Separar inputs en un componente
+1. Instalar **ShortId** (para generar id) en el proyecto **07formulario_crud**:
+    + $ cd 07formulario_crud
+    + $ npm i shortid
+2. Crear componente **07formulario_crud\src\components\Input.vue**:
+    ```vue
+    <template>
+        <input type="text" class="form-control my-2" placeholder="Ingrese nombre" v-model.trim="tarea.nombre">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="check-1" value="JavaScript" v-model="tarea.categorias">
+            <label class="form-check-label" for="check-1">JavaScript</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="check-2" value="Node.js" v-model="tarea.categorias">
+            <label class="form-check-label" for="check-2">Node.js</label>
+        </div>
+        <div class="mt-2">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="radio-1" value="Urgente" v-model="tarea.estado">
+                <label class="form-check-label" for="radio-1">Urgente</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="radio-2" value="Rilax" v-model="tarea.estado">
+                <label class="form-check-label" for="radio-2">Rilax</label>
+            </div>
+        </div>
+        <div class="mt-2">
+            <input type="number" v-model.number="tarea.numero" class="form-control">
+        </div>
+        <button class="btn btn-dark mt-2 btn-block" type="submit" :disabled="bloquear">Procesar</button>
+    </template>
+
+    <script>
+    export default {
+        props: {
+            tarea: Object
+        },
+        computed: {
+            bloquear() {
+                return this.tarea.nombre.trim() === '' ? true : false
+            }
+        }
+    }
+    </script>
+    ```
+3. Modificar vista **07formulario_crud\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            <Input :tarea="tarea" />
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+    import Input from '../components/Input'
+
+    export default {
+        name: 'Home',
+        components: {
+            Input
+        },
+        data() {
+            return {
+                tarea: {
+                    id: '',
+                    nombre: '',
+                    categorias: [],
+                    estado: '',
+                    numero: 0
+                }
+            }
+        },
+        methods: {
+            procesarFormulario() {
+                console.log(this.tarea)
+                if(this.tarea.nombre.trim() === ''){
+                    console.log('Campo vacío')
+                    return
+                }
+                // enviar los datos
+                this.tarea = {
+                    nombre: '',
+                    categorias: [],
+                    estado: '',
+                    numero: 0
+                }
+            }
+        }
+    }
+    </script>
+    ```
+
+### 91. Vuex y generar IDs
+1. Modificar tienda **07formulario_crud\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            tareas: [],
+            tarea: {
+                id: '',
+                nombre: '',
+                categorias: [],
+                estado: '',
+                numero: 0
+            }
+        },
+        mutations: {
+            set(state, payload){
+                state.tareas.push(payload)
+                console.log(state.tareas)
+            }
+        },
+        actions: {
+            setTareas({ commit }, tarea) {
+                commit('set', tarea)
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+2. Modificar vista **07formulario_crud\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            <Input :tarea="tarea" />
+        </form>
+        <hr>
+        <p>{{ tarea }}</p>
+    </template>
+
+    <script>
+    import Input from '../components/Input'
+    import { mapActions } from 'vuex'
+    const shortid = require('shortid')
+
+    export default {
+        name: 'Home',
+        components: {
+            Input
+        },
+        data() {
+            return {
+                tarea: {
+                    id: '',
+                    nombre: '',
+                    categorias: [],
+                    estado: '',
+                    numero: 0
+                }
+            }
+        },
+        methods: {
+            ...mapActions(['setTareas']),
+            procesarFormulario() {
+                console.log(this.tarea)
+                if(this.tarea.nombre.trim() === ''){
+                    console.log('Campo vacío')
+                    return
+                }
+
+                // generar id
+                this.tarea.id = shortid.generate()
+                console.log(this.tarea.id)
+
+                // enviar los datos
+                this.setTareas(this.tarea)
+
+                // limpiar formulario
+                this.tarea = {
+				    id: '',
+                    nombre: '',
+                    categorias: [],
+                    estado: '',
+                    numero: 0
+                }
+            }
+        }
+    }
+    </script>
+    ```
+
+### 92. Pintar Tareas en una tabla
++ https://getbootstrap.com/docs/4.5/content/tables
+1. Crear componente **07formulario_crud\src\components\ListaTareas.vue**:
+    ```vue
+    <template>
+        {{ tareas }}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Categorías</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Número</th>
+                    <th scope="col">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="tarea in tareas" :key="tarea.id">
+                    <th scope="row">{{ tarea.id }}</th>
+                    <td>{{ tarea.nombre }}</td>
+                    <td>{{ tarea.categorias }}</td>
+                    <td>{{ tarea.estado }}</td>
+                    <td>{{ tarea.numero }}</td>
+                    <td>Acción</td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+
+    <script>
+    import { mapState } from 'vuex'
+    export default {
+        computed: {
+            ...mapState(['tareas'])
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **07formulario_crud\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            <Input :tarea="tarea" />
+        </form>
+        <hr>
+        <ListaTareas />
+    </template>
+
+    <script>
+    import Input from '../components/Input'
+    import ListaTareas from '../components/ListaTareas'
+    ≡
+
+    export default {
+        name: 'Home',
+        components: {
+            Input,
+            ListaTareas
+        },
+        ≡
+    }
+    </script>
+    ```
+
+### 93. Pintar categorías (v-for dentro de otro v-for)
+1. Modificar componente **07formulario_crud\src\components\ListaTareas.vue**:
+    ```vue
+    ≡
+    <tbody>
+        <tr v-for="tarea in tareas" :key="tarea.id">
+            <th scope="row">{{ tarea.id }}</th>
+            <td>{{ tarea.nombre }}</td>
+            <td>
+                <span v-for="(categoria, index) in tarea.categorias" :key="index">
+                    {{ categoria + (tarea.categorias.length === index + 1 ? '' : ', ') }} 
+                </span>
+            </td>
+            <td>{{ tarea.estado }}</td>
+            <td>{{ tarea.numero }}</td>
+            <td>Acción</td>
+        </tr>
+    </tbody>
+    ≡
+    ```
+
+### 94. Función join() Javascript
++ Función join() Javascript: solución más elegante al punto anterior - Array.join(', ') para unir con comas:
+    ```vue
+    <td>{{ tarea.categorias.join(', ') }}</td>
+    ```
+
+### 95. Eliminar items
+1. Modificar tienda **07formulario_crud\src\store\index.js**:
+    ```js
+    ≡
+    mutations: {
+        ≡
+        eliminar(state, payload){
+            state.tareas = state.tareas.filter(tarea => tarea.id !== payload)
+        }
+    },
+    actions: {
+        ≡
+        deleteTareas({ commit }, id) {
+            commit('eliminar', id)
+        }
+    },
+    ≡
+    ```
+2. Modificar componente **07formulario_crud\src\components\ListaTareas.vue**:
+    ```vue
+    <template>
+        {{ tareas }}
+        <table class="table">
+            ≡
+            <tbody>
+                <tr v-for="tarea in tareas" :key="tarea.id">
+                    ≡
+                    <td>{{ tarea.numero }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @click="deleteTareas(tarea.id)">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+
+    <script>
+    import { mapState, mapActions } from 'vuex'
+    export default {
+        computed: {
+            ...mapState(['tareas'])
+        },
+        methods: {
+            ...mapActions(['deleteTareas'])
+        }
+    }
+    </script>   
+    ```
+
+### 96. Editar items (parte 1 - capturar id)
+1. Crear vista **07formulario_crud\src\views\Editar.vue**:
+    ```vue
+    <template>
+        Editar {{ $route.params.id }} - {{ tarea }}
+    </template>
+
+    <script>
+    import { mapState, mapActions } from 'vuex'
+    export default {
+        computed: {
+            ...mapState(['tarea'])
+        },
+        methods: {
+            ...mapActions(['setTarea'])
+        },
+        created(){
+            this.setTarea(this.$route.params.id)
+        }
+    }
+    </script>
+    ```
+2. Modificar archivo de rutas **07formulario_crud\src\router\index.js**:
+    ```js
+    import { createRouter, createWebHistory } from 'vue-router'
+    import Home from '../views/Home.vue'
+
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: Home
+        },
+        {
+            path: '/about',
+            name: 'About',
+            component: () => import('../views/About.vue')
+        },
+        {
+            path: '/editar/:id',
+            name: 'Editar',
+            component: () => import('../views/Editar.vue')
+        }
+    ]
+
+    const router = createRouter({
+        history: createWebHistory(process.env.BASE_URL),
+        routes
+    })
+
+    export default router
+    ```
+3. Modificar componente **07formulario_crud\src\components\ListaTareas.vue**:
+    ```vue
+    <tbody>
+        <tr v-for="tarea in tareas" :key="tarea.id">
+            <th scope="row">{{ tarea.id }}</th>
+            <td>{{ tarea.nombre }}</td>
+            <td>{{ tarea.categorias.join(', ') }}</td>
+            <td>{{ tarea.estado }}</td>
+            <td>{{ tarea.numero }}</td>
+            <td>
+                <router-link class="btn btn-warning btn-sm" :to="{ name: 'Editar', params: { id: tarea.id} }">
+                    Editar
+                </router-link>
+                <button class="btn btn-danger btn-sm ml-2" @click="deleteTareas(tarea.id)">
+                    Eliminar
+                </button>
+            </td>
+        </tr>
+    </tbody>
+    ```
+4. Modificar tienda **07formulario_crud\src\store\index.js**:
+    ```js
+    ≡
+    export default createStore({
+        ≡
+        mutations: {
+            ≡
+            tarea(state, payload) {
+                state.tarea =state.tareas.find(tarea => tarea.id === payload)
+            }
+        },
+        actions: {
+            ≡
+            setTarea({ commit }, id) {
+                commit('tarea', id)
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+
+### 97. Editar items (parte 2 - formulario edición)
+1. Modificar vista **07formulario_crud\src\views\Editar.vue**:
+    ```vue
+    <template>
+        Editar {{ $route.params.id }} - {{ tarea }}
+        <form @submit.prevent="updateTarea(tarea)">
+            <Input :tarea="tarea" />
+        </form>
+    </template>
+
+    <script>
+    import { mapState, mapActions } from 'vuex'
+    import Input from '../components/Input'
+
+    export default {
+        components: {
+            Input
+        },
+        computed: {
+            ...mapState(['tarea'])
+        },
+        methods: {
+            ...mapActions(['setTarea', 'updateTarea'])
+        },
+        created(){
+            this.setTarea(this.$route.params.id)
+        }
+    }
+    </script>
+    ```
+2. Modificar tienda **07formulario_crud\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+    import router from '../router'
+
+    export default createStore({
+        ≡
+        mutations: {
+            ≡
+            tarea(state, payload) {
+                if(!state.tareas.find(tarea => tarea.id === payload)){
+                    router.push('/')
+                    return
+                }
+                state.tarea = state.tareas.find(tarea => tarea.id === payload)
+            },
+            update(state, payload) {
+                state.tarea =state.tareas.map(tarea => tarea.id === payload.id ? payload : tarea)
+                router.push('/')
+            }
+        },
+        actions: {
+            ≡
+            updateTarea({ commit}, tarea) {
+                commit('update', tarea)
+            },
+        },
+        modules: {
+        }
+    })
+    ```
+
+### 98. Respaldar información en LocalStorage
+1. Modificar tienda **07formulario_crud\src\store\index.js**:
+    ```js
+    ≡
+    export default createStore({
+        ≡
+        mutations: {
+            cargar(state, payload) {
+                state.tareas = payload
+            },
+            set(state, payload){
+                state.tareas.push(payload)
+                localStorage.setItem('tareas', JSON.stringify(state.tareas))
+            },
+            eliminar(state, payload){
+                state.tareas = state.tareas.filter(tarea => tarea.id !== payload)
+                localStorage.setItem('tareas', JSON.stringify(state.tareas))
+            },
+            tarea(state, payload) {
+                if(!state.tareas.find(tarea => tarea.id === payload)){
+                    router.push('/')
+                    return
+                }
+                state.tarea = state.tareas.find(tarea => tarea.id === payload)
+            },
+            update(state, payload) {
+                state.tarea =state.tareas.map(tarea => tarea.id === payload.id ? payload : tarea)
+                localStorage.setItem('tareas', JSON.stringify(state.tareas))
+                router.push('/')
+            }
+        },
+        actions: {
+            cargarLocalStorage({ commit }){
+                if(localStorage.getItem('tareas')){
+                    const tareas = JSON.parse(localStorage.getItem('tareas'))
+                    commit('cargar', tareas)
+                    return
+                }
+                localStorage.setItem('tareas', JSON.stringify([]))
+            },
+            ≡
+        },
+        ≡
+    })
+    ```
+2. Modificar componente principal **07formulario_crud\src\App.vue**:
+    ```vue
+    <template>
+        <Navbar />
+        <div class="container">
+            <router-view/>
+        </div>
+    </template>
+
+    <script>
+    import Navbar from './components/Navbar'
+    import { mapActions } from 'vuex'
+    export default {
+        components: {
+            Navbar
+        },
+        methods: {
+            ...mapActions(['cargarLocalStorage'])
+        },
+        created(){
+            this.cargarLocalStorage()
+        }
+    }
+    </script>
+    ```
+
+### 99. Archivos Terminados de esta sección
++ Código fuente de esta sección: 00recursos\Formulario+CRUD.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "CRUD + LocalStorage"
++ $ git push -u origin main
 
 
+## Sección 10: API Rest Firebase
+### 100. API REST Firebase - Introducción
 
 
 
@@ -2312,31 +2888,6 @@
 
 
 
-
-### 89. Clonar proyecto anterior
-2 min
-### 90. Separar inputs en un componente
-5 min
-### 91. Vuex y generar IDs
-6 min
-### 92. Pintar Tareas en una tabla
-7 min
-### 93. Pintar categorías (v-for dentro de otro v-for)
-4 min
-### 94. Función join() Javascript
-1 min
-### 95. Eliminar items
-5 min
-### 96. Editar items (parte 1 - capturar id)
-11 min
-### 97. Editar items (parte 2 - formulario edición)
-10 min
-### 98. Respaldar información en LocalStorage
-10 min
-### 99. Archivos Terminados de esta sección
-1 min
-### 100. API REST Firebase - Introducción
-1 min
 ### 101. Firebase - Primeros pasos
 8 min
 ### 102. PUT o POST: Agregar tareas a nuestra base de datos
