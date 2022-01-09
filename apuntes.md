@@ -2879,6 +2879,178 @@
 
 ## Sección 10: API Rest Firebase
 ### 100. API REST Firebase - Introducción
++ https://bluuweb.github.io/vue-udemy
++ **Contenido**: sobre Firebase como Backend.
+
+### 101. Firebase - Primeros pasos
+1. Clonar el proyecto anterior **07formulario_crud** excluyendo la carpeta **07formulario_crud\node_modules** y llamándolo **08api_firebase**.
+2. Instalar todas las dependencias del nuevo proyecto **08api_firebase** y ejecutar:
+    + $ cd 08api_firebase
+    + $ npm i
+    + $ npm run serve
+3. Ir a [firebase](https://firebase.google.com)
+    + Ingresar y agregar proyecto.
+    + Nombre: **api-firebase**.
+    + Dashabilitar Google Analytics.
+    + Ir a Realtime Database, crear una base de datos y comenzar en modo de prueba.
+    + Obtener ruta raiz para consumir API's:
+        + https://api-firebase-56408-default-rtdb.firebaseio.com
+
+### 102. PUT o POST: Agregar tareas a nuestra base de datos
+1. Modificar tienda **08api_firebase\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+    import router from '../router'
+
+    export default createStore({
+        state: {
+            tareas: [],
+            tarea: {
+                id: '',
+                nombre: '',
+                categorias: [],
+                estado: '',
+                numero: 0
+            }
+        },
+        mutations: {
+            cargar(state, payload) {
+                state.tareas = payload
+            },
+            set(state, payload){
+                state.tareas.push(payload)
+            },
+            eliminar(state, payload){
+                state.tareas = state.tareas.filter(tarea => tarea.id !== payload)
+            },
+            tarea(state, payload) {
+                if(!state.tareas.find(tarea => tarea.id === payload)){
+                    router.push('/')
+                    return
+                }
+                state.tarea = state.tareas.find(tarea => tarea.id === payload)
+            },
+            update(state, payload) {
+                state.tarea =state.tareas.map(tarea => tarea.id === payload.id ? payload : tarea)
+                router.push('/')
+            }
+        },
+        actions: {
+            cargarLocalStorage({ commit }){
+            },
+            async setTareas({ commit }, tarea) {
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(tarea)
+                    })
+                    const dataDB = await res.json()
+                    console.log(dataDB)
+                } catch (error) {
+                    console.log(error)
+                }
+                commit('set', tarea)
+            },
+            deleteTareas({ commit }, id) {
+                commit('eliminar', id)
+            },
+            setTarea({ commit }, id) {
+                commit('tarea', id)
+            },
+            updateTarea({ commit}, tarea) {
+                commit('update', tarea)
+            },
+        },
+        modules: {
+        }
+    })
+    ```
+
+### 103. DevTools failed to load sourcemap
++ **Contenido**: sobre como quitar el mensaje de advertencia de DevTools en la consola del navegador.
+
+### 104. GET: Leer base de datos
+1. Modificar tienda **08api_firebase\src\store\index.js**:
+    ```js
+    ≡
+    export default createStore({
+        ≡
+        mutations: {
+            ≡
+        },
+        actions: {
+            async cargarLocalStorage({ commit }){
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas.json`)
+                    const dataDB = await res.json()
+                    
+                    const tareas = []
+                    for (let id in dataDB){
+                        tareas.push(dataDB[id])
+                    }
+                    commit('cargar', tareas)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            ≡
+        },
+        ≡
+    })
+    ```
+
+### 105. PATCH: Editar tarea de base de datos
+1. Modificar tienda **08api_firebase\src\store\index.js**:
+    ```js
+    ≡
+    async updateTarea({ commit}, tarea) {
+        try {
+            const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${tarea.id}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(tarea)
+            })
+            const dataDB = await res.json()
+            commit('update', tarea)
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    ≡
+    ```
+
+### 106. DELETE: Eliminar tarea de base de datos
++ https://firebase.google.com/docs/database/rest/save-data
+1. Modificar tienda **08api_firebase\src\store\index.js**:
+    ```js
+    ≡
+    async deleteTareas({ commit }, id) {
+        try {
+            await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${id}.json`, {
+                method: 'DELETE'
+            })
+            commit('eliminar', id)
+        } catch (error) {
+            console.log(error)
+        }
+    },
+    ≡
+    ```
+
+### 107. Archivos Terminados de esta sección
++ Código fuente: 00recursos\API+Firebase.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "API Rest Firebase"
++ $ git push -u origin main
+
+
+## Sección 11: API Auth Firebase - Rutas protegidas
+### 108. Introducción API AUTH FIREBASE
+
 
 
 
@@ -2887,23 +3059,6 @@
     ```
 
 
-
-### 101. Firebase - Primeros pasos
-8 min
-### 102. PUT o POST: Agregar tareas a nuestra base de datos
-17 min
-### 103. DevTools failed to load sourcemap
-1 min
-### 104. GET: Leer base de datos
-8 min
-### 105. PATCH: Editar tarea de base de datos
-4 min
-### 106. DELETE: Eliminar tarea de base de datos
-4 min
-### 107. Archivos Terminados de esta sección
-1 min
-### 108. Introducción API AUTH FIREBASE
-1 min
 ### 109. Importante - Recomendación
 1 min
 ### 110. Reglas de seguridad Firebase
