@@ -3050,6 +3050,1159 @@
 
 ## Sección 11: API Auth Firebase - Rutas protegidas
 ### 108. Introducción API AUTH FIREBASE
++ https://bluuweb.github.io/vue-udemy/08-01-auth
++ **Contenido**: sobre autenticación con Firebase.
+
+### 109. Importante - Recomendación
++ **Contenido**: recomendación para esta sección.
+
+### 110. Reglas de seguridad Firebase
+1. Clonar el proyecto anterior **08api_firebase** excluyendo la carpeta **08api_firebase\node_modules** y llamándolo **09api_auth_firebase**.
+2. Instalar todas las dependencias del nuevo proyecto **09api_auth_firebase** y ejecutar:
+    + $ cd 09api_auth_firebase
+    + $ npm i
+2. Ir a [firebase](https://firebase.google.com):
+    + Ingresar al proyecto **api-firebase**.
+    + Ir a **Realtime Database > Reglas** y configurar las reglas:
+        ```json
+        {
+        "rules": {
+            "tareas": {
+                ".read": "auth != null",
+                ".write": "auth != null"
+            }
+        }
+        }
+        ```
+    + Presionar el botón **Publicar**.
+3. Ejecutar proyecto:
+    + $ npm run serve 
+
+### 111. Formulario Registro con Validaciones en Vue.js
+1. Modificar archivo de rutas **09api_auth_firebase\src\router\index.js**:
+    ```js
+    ≡
+    const routes = [
+        ≡
+        {
+            path: '/registro',
+            name: 'Registro',
+            component: () => import('../views/Registro.vue')
+        }
+    ]
+    ≡
+    ```
+2. Crear vista **09api_auth_firebase\src\views\Registro.vue**:
+    ```vue
+    <template>
+        <h1 class="my-5">Registro de usuarios</h1>
+        <form>
+            <input type="email" placeholder="email" class="form-control my-2" v-model.trim="email">
+            <input type="password" placeholder="password" class="form-control my-2" v-model.trim="pass1">
+            <input type="password" placeholder="password" class="form-control my-2" v-model.trim="pass2">
+            <button type="submit" class="btn btn-primary" :disabled="bloquear">Registrar</button>
+        </form>
+    </template>
+
+    <script>
+    export default {
+        data() {
+            return {
+                email: '',
+                pass1: '',
+                pass2: ''
+            }
+        },
+        computed: {
+            bloquear(){
+                if(!this.email.includes('@')){
+                    return true
+                }
+                if(this.pass1.length > 5 && this.pass1 === this.pass2){
+                    return false
+                }
+                return true
+            }
+        }
+    }
+    </script>
+    ```
+
+### 112. Registrar usuario en Firebase
++ https://firebase.google.com/docs/reference/rest/auth
+1. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    ≡
+	actions: {
+		async registrarUsuario({ commit }, user) {
+			try {
+				// [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+				const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+					method: 'POST',
+					body: JSON.stringify({
+						email: user.email,
+						password: user.password,
+						returnSecureToken: true
+					})
+				})
+				const userDB = await res.json()
+				console.log(userDB)
+			} catch (error) {
+				console.log(error)
+			}
+		},
+        ≡
+    }
+    ≡
+    ```
+    + **Nota 1**: ir a la documentación de [firebase](https://firebase.google.com/docs/reference/rest/auth) para obtener la estructura del endpoint para la autenticación:
+        + https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=[API_KEY]
+    + **Nota 2**: para obtener **API_KEY**:
+        + Ir a [firebase](https://console.firebase.google.com)
+        + Ir al proyecto **api-firebase**.
+        + Ir a confguración del proyecto.
+        + Ubicar **Clave de API de la web** (AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0).
+        + En el panel izquierdo ir a **Authentication**.
+        + Presionar en **Comenzar**.
+        + En **Agrega tu primer método de acceso y comienza a utilizar Firebase Auth** presionar en **Correo electrónico/contraseña**.
+        + Habilitar **Correo electrónico/contraseña** y presionar **Guardar**.
+2. Modificar vista **09api_auth_firebase\src\views\Registro.vue**:
+    ```vue
+    <template>
+        <h1 class="my-5">Registro de usuarios</h1>
+        <form @submit.prevent="procesarFormulario">
+            <input type="email" placeholder="email" class="form-control my-2" v-model.trim="email">
+            <input type="password" placeholder="password" class="form-control my-2" v-model.trim="pass1">
+            <input type="password" placeholder="password" class="form-control my-2" v-model.trim="pass2">
+            <button type="submit" class="btn btn-primary" :disabled="bloquear">Registrar</button>
+        </form>
+    </template>
+
+    <script>
+    import { mapActions } from 'vuex'
+
+    export default {
+        data() {
+            return {
+                email: '',
+                pass1: '',
+                pass2: ''
+            }
+        },
+        computed: {
+            bloquear(){
+                if(!this.email.includes('@')){
+                    return true
+                }
+                if(this.pass1.length > 5 && this.pass1 === this.pass2){
+                    return false
+                }
+                return true
+            }
+        },
+        methods: {
+            ...mapActions(['registrarUsuario']),
+            procesarFormulario() {
+                this.registrarUsuario({ email: this.email, password: this.pass1 })
+
+                // Limpiar formulario
+                this.email = ''
+                this.pass1 = ''
+                this.pass2 = ''
+            }
+        }
+    }
+    </script>
+    ```
+
+### 113. ¿No ves la API KEY?
++ **Nota**: en caso de **No hay clave de API web para este proyecto**, seguir los siguientes pasos:
+    + Ir al panel **Tus apps** y presionar en **</>**.
+    + Registrar app:
+        + Sobrenombre de la app: api-firebase
+    + Presionar en **Registrar app**.
+    + Aparecerá un código similar a este:
+        ```js
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "firebase/app";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0",
+            authDomain: "api-firebase-56408.firebaseapp.com",
+            databaseURL: "https://api-firebase-56408-default-rtdb.firebaseio.com",
+            projectId: "api-firebase-56408",
+            storageBucket: "api-firebase-56408.appspot.com",
+            messagingSenderId: "652091577563",
+            appId: "1:652091577563:web:7183b8e2883b7c8a3da8fe"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        ```
+    + Obtener del código anterior **apiKey: "AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0"**.
+    + Presionar en **Ir a la consola**.
+    + En el panel izquierdo ir a **Authentication**.
+    + Presionar en **Comenzar**.
+    + En **Agrega tu primer método de acceso y comienza a utilizar Firebase Auth** presionar en **Correo electrónico/contraseña**.
+    + Habilitar **Correo electrónico/contraseña** y presionar **Guardar**.
+
+### 114. Corrección error video anterior + commit de usuario
+1. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    ≡
+    async registrarUsuario({ commit }, user) {
+        try {
+            // [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+            const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: user.email,
+                    password: user.password,
+                    returnSecureToken: true
+                })
+            })
+            const userDB = await res.json()
+            console.log(userDB)
+            if(userDB.error) {
+                console.log(userDB.error)
+                return
+            }
+            commit('setUser', userDB)
+			router.push('/')
+        } catch (error) {
+            console.log(error)
+        }
+        ≡
+    },
+    ≡
+    ```
+
+### 115. Ingreso de usuario (Login)
++ https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password
+1. Agregar ruta ing**reso en **09api_auth_firebase\src\router\index.js**:
+    ```js
+    ≡
+    const routes = [
+        ≡
+        {
+            path: '/ingreso',
+            name: 'Ingreso',
+            component: () => import('../views/Ingreso.vue')
+        }
+    ]
+    ≡
+    ```
+2. Crear la vista **09api_auth_firebase\src\views\Ingreso.vue**:
+    ```vue
+    <template>
+        <h1 class="my-5">Ingreso de usuarios</h1>
+        <form @submit.prevent="procesarFormulario">
+            <input type="email" placeholder="email" class="form-control my-2" v-model.trim="email">
+            <input type="password" placeholder="password" class="form-control my-2" v-model.trim="pass1">
+            <button type="submit" class="btn btn-primary" :disabled="bloquear">Ingresar</button>
+        </form>
+    </template>
+
+    <script>
+    import { mapActions } from 'vuex'
+
+    export default {
+        data() {
+            return {
+                email: '',
+                pass1: ''
+            }
+        },
+        computed: {
+            bloquear(){
+                if(!this.email.includes('@')){
+                    return true
+                }
+                if(this.pass1.length > 5){
+                    return false
+                }
+                return true
+            }
+        },
+        methods: {
+            ...mapActions(['ingresoUsuario']),
+            procesarFormulario() {
+                this.ingresoUsuario({ email: this.email, password: this.pass1 })
+
+                // Limpiar formulario
+                this.email = ''
+                this.pass1 = ''
+            }
+        }
+    }
+    </script>
+    ```
+3. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    ≡
+	actions: {
+		async ingresoUsuario({ commit }, user) {
+			try {
+				// [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+				const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+					method: 'POST',
+					body: JSON.stringify({
+						email: user.email,
+						password: user.password,
+						returnSecureToken: true
+					})
+				})
+				const userDB = await res.json()
+				console.log(userDB)
+				if(userDB.error) {
+					console.log(userDB.error)
+					return
+				}
+				commit('setUser', userDB)
+				router.push('/')
+			} catch (error) {
+				console.log(error)
+			}
+		},
+        ≡
+    }
+    ≡
+    ```
+
+### 116. Reglas de seguridad Firebase
++ https://firebase.google.com/docs/database/rest/auth#authenticate_with_an_id_token
+1. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    ≡
+    export default createStore({
+        ≡
+        actions: {
+            async ingresoUsuario({ commit }, user) {
+                try {
+                    // [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+                    const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            email: user.email,
+                            password: user.password,
+                            returnSecureToken: true
+                        })
+                    })
+                    const userDB = await res.json()
+                    console.log('INGRESO: ', userDB)
+                    if(userDB.error) {
+                        console.log(userDB.error)
+                        return
+                    }
+                    commit('setUser', userDB)
+                    router.push('/')
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async registrarUsuario({ commit }, user) {
+                try {
+                    // [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+                    const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            email: user.email,
+                            password: user.password,
+                            returnSecureToken: true
+                        })
+                    })
+                    const userDB = await res.json()
+                    console.log('REGISTRO: ', userDB)
+                    if(userDB.error) {
+                        console.log(userDB.error)
+                        return
+                    }
+                    commit('setUser', userDB)
+                    router.push('/')
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async cargarLocalStorage({ commit, state }){
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
+                    const dataDB = await res.json()
+                    
+                    const tareas = []
+                    console.log('Table:', dataDB)
+                    for (let id in dataDB){
+                        tareas.push(dataDB[id])
+                    }
+                    commit('cargar', tareas)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async setTareas({ commit, state }, tarea) {
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(tarea)
+                    })
+                    const dataDB = await res.json()
+                    console.log(dataDB)
+                } catch (error) {
+                    console.log(error)
+                }
+                commit('set', tarea)
+            },
+            async deleteTareas({ commit, state }, id) {
+                try {
+                    await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`, {
+                        method: 'DELETE'
+                    })
+                    commit('eliminar', id)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            setTarea({ commit }, id) {
+                commit('tarea', id)
+            },
+            async updateTarea({ commit, state }, tarea) {
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(tarea)
+                    })
+                    const dataDB = await res.json()
+                    commit('update', tarea)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+        },
+        ≡
+    })
+    ```
+2. Modificar vista **09api_auth_firebase\src\views\Home.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            <Input :tarea="tarea" />
+        </form>
+        <hr>
+        <ListaTareas />
+    </template>
+
+    <script>
+    ≡
+    export default {
+        ≡
+        methods: {
+            ...mapActions(['setTareas', 'cargarLocalStorage']),
+            ≡
+        },
+        created(){
+            this.cargarLocalStorage()
+        }
+    }
+    </script>
+    ```
+3. Cambiar reglas para la lista de tareas:
+    + Ir a [firebase](https://console.firebase.google.com)
+    + Ir al proyecto **api-firebase**.
+    + Ir a **Realtime Database** en igresar a **Reglas**.
+    + Modificar Reglas:
+        ```json
+        {
+            "rules": {
+                "tareas": {
+                    "$uid": {
+                        ".write": "$uid === auth.uid",
+                        ".read": "$uid === auth.uid"
+                    }
+                }
+            }
+        }
+        ```
+        + **Nota 1**: presionar en **Publicar** para guardar los cambios.
+        + **Nota 2**: en el objeto **user** el **localId** equivale al **uid**.
+
+### 117. Getters: Ocultar enlaces navbar
+1. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    ≡
+	getters: {
+		usuarioAutenticado(state) {
+			return !!state.user		// Si user existe retornará true
+		}
+	},
+	modules: {
+	}
+    ≡
+    ```
+2. Modificar componente **09api_auth_firebase\src\components\Navbar.vue**:
+    ```vue
+    <template>
+        {{ usuarioAutenticado }}
+        <div class="navbar navbar-dark bg-dark">
+            <router-link to="/" class="navbar-brand">
+                Formulario
+            </router-link>
+            <div class="d-flex">
+                <router-link to="/" class="btn btn-dark" v-if="usuarioAutenticado">
+                    Tareas
+                </router-link>
+                <router-link to="/ingreso" class="btn btn-dark" v-if="!usuarioAutenticado">
+                    Ingresar
+                </router-link>
+                <router-link to="/registro" class="btn btn-dark" v-if="!usuarioAutenticado">
+                    Registrarse
+                </router-link>
+                <button v-if="usuarioAutenticado" class="btn btn-dark">Cerrar Sesión</button>
+            </div>
+        </div>
+    </template>
+    ≡
+    ```
+
+### 118. Cerrar sesión
+1. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    ≡
+	actions: {
+		cerrarSesion({ commit }) {
+			commit('setUser', null)
+			router.push('/ingreso')
+		},
+        ≡
+    }
+    ```
+2. Modificar componente **09api_auth_firebase\src\components\Navbar.vue**:
+    ```vue
+    <template>
+        <div class="navbar navbar-dark bg-dark">
+            ≡
+            <div class="d-flex">
+                ≡
+                <button v-if="usuarioAutenticado" class="btn btn-dark" @click="cerrarSesion">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { mapGetters, mapActions } from 'vuex'
+    export default {
+        ≡
+        methods: {
+            ...mapActions(['cerrarSesion'])
+        }
+    }
+    </script>
+    ```
+
+### 119. Router: Rutas protegidas
+1. Modificar archivo de rutas **09api_auth_firebase\src\router\index.js**:
+    ```js
+    import { createRouter, createWebHistory } from 'vue-router'
+    import Home from '../views/Home.vue'
+    import store from '../store'
+
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: Home,
+            meta: {rutaProtegida: true}
+        },
+        {
+            path: '/editar/:id',
+            name: 'Editar',
+            component: () => import('../views/Editar.vue'),
+            meta: {rutaProtegida: true}
+        },
+        {
+            path: '/registro',
+            name: 'Registro',
+            component: () => import('../views/Registro.vue')
+        },
+        {
+            path: '/ingreso',
+            name: 'Ingreso',
+            component: () => import('../views/Ingreso.vue')
+        }
+    ]
+
+    const router = createRouter({
+        history: createWebHistory(process.env.BASE_URL),
+        routes
+    })
+
+    router.beforeEach((to, from, next) => {
+        console.log(to.meta.rutaProtegida)
+        if(to.meta.rutaProtegida) {
+            if(store.getters.usuarioAutenticado) {
+                next()
+            } else {
+                next('/ingreso')
+            }
+        } else {
+            next()
+        }
+    })
+
+    export default router
+    ```
+2. Eliminar vista **09api_auth_firebase\src\views\About.vue**.
+
+### 120. Guardar Token en LocalStorage
+1. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+    import router from '../router'
+
+    export default createStore({
+        state: {
+            tareas: [],
+            tarea: {
+                id: '',
+                nombre: '',
+                categorias: [],
+                estado: '',
+                numero: 0
+            },
+            user: null
+        },
+        mutations: {
+            setUser(state, payload) {
+                state.user = payload
+            },
+            cargar(state, payload) {
+                state.tareas = payload
+            },
+            set(state, payload){
+                state.tareas.push(payload)
+            },
+            eliminar(state, payload){
+                state.tareas = state.tareas.filter(tarea => tarea.id !== payload)
+            },
+            tarea(state, payload) {
+                if(!state.tareas.find(tarea => tarea.id === payload)){
+                    router.push('/')
+                    return
+                }
+                state.tarea = state.tareas.find(tarea => tarea.id === payload)
+            },
+            update(state, payload) {
+                state.tarea =state.tareas.map(tarea => tarea.id === payload.id ? payload : tarea)
+                router.push('/')
+            }
+        },
+        actions: {
+            cerrarSesion({ commit }) {
+                commit('setUser', null)
+                router.push('/ingreso')
+                localStorage.removeItem('usuario')
+            },
+            async ingresoUsuario({ commit }, user) {
+                try {
+                    // [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+                    const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            email: user.email,
+                            password: user.password,
+                            returnSecureToken: true
+                        })
+                    })
+                    const userDB = await res.json()
+                    console.log('INGRESO: ', userDB)
+                    if(userDB.error) {
+                        console.log(userDB.error)
+                        return
+                    }
+                    commit('setUser', userDB)
+                    router.push('/')
+                    localStorage.setItem('usuario', JSON.stringify(userDB))
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async registrarUsuario({ commit }, user) {
+                try {
+                    // [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+                    const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            email: user.email,
+                            password: user.password,
+                            returnSecureToken: true
+                        })
+                    })
+                    const userDB = await res.json()
+                    console.log('REGISTRO: ', userDB)
+                    if(userDB.error) {
+                        console.log(userDB.error)
+                        return
+                    }
+                    commit('setUser', userDB)
+                    router.push('/')
+                    localStorage.setItem('usuario', JSON.stringify(userDB))
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async cargarLocalStorage({ commit, state }){
+                if(localStorage.getItem('usuario')){
+                    commit('setUser', JSON.parse(localStorage.getItem('usuario')))
+                } else {
+                    return commit('setUser', null)
+                }
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
+                    const dataDB = await res.json()
+                    
+                    const tareas = []
+                    console.log('Table:', dataDB)
+                    for (let id in dataDB){
+                        tareas.push(dataDB[id])
+                    }
+                    commit('cargar', tareas)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async setTareas({ commit, state }, tarea) {
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(tarea)
+                    })
+                    const dataDB = await res.json()
+                    console.log(dataDB)
+                } catch (error) {
+                    console.log(error)
+                }
+                commit('set', tarea)
+            },
+            async deleteTareas({ commit, state }, id) {
+                try {
+                    await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`, {
+                        method: 'DELETE'
+                    })
+                    commit('eliminar', id)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            setTarea({ commit }, id) {
+                commit('tarea', id)
+            },
+            async updateTarea({ commit, state }, tarea) {
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(tarea)
+                    })
+                    const dataDB = await res.json()
+                    commit('update', tarea)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+        },
+        getters: {
+            usuarioAutenticado(state) {
+                return !!state.user		// Si user existe retornará true
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+
+### 121. Hosting Firebase
+1. Compilar el proyecto **09api_auth_firebase** para hacer deploy en Google Firebase:
+    + $ cd 09api_auth_firebase
+    + $ npm run build
+2. Instalar las herramientas de Firebase en la PC:
+    + $ npm install -g firebase-tools
+3. Hacer deploy:
+    + Ir a [firebase](https://console.firebase.google.com)
+    + Ir al proyecto **api-firebase**.
+    + Ir a **Hosting** y presionar en **Comenzar**.
+    + Presionar en **Siguiente**.
+    + En consola de la pc ubicados en la raíz del proyecto:
+        + $ firebase login
+        + $ firebase init
+            + ? Are you ready to proceed? (Y/n): y
+            + Seleccionar:
+                + ( ) Hosting: Configure files for Firebase Hosting and (optionally) set up GitHub Action deploys
+            + Seleccionar: > Use an existing project
+            + Seleccionar: > api-firebase-56408 (api-firebase)
+            + ? What do you want to use as your public directory? (public): dist
+            + ? Configure as a single-page app (rewrite all urls to /index.html)? (y/N): y
+            + ? Set up automatic builds and deploys with GitHub? (y/N): n
+            + ? File dist/index.html already exists. Overwrite? (y/N): n
+    + Presionar en **Siguiente**.
+    + En consola de la pc ubicados en la raíz del proyecto:
+        + $ firebase deploy
+            + URL de la aplicación: https://api-firebase-56408.web.app
+
+### 122. Hosting Netlify
+1. Ir a la página de **Netlify** y subir la carpeta **dist**:
+    + Nombre del sitio: https://firebase-api-hspp.netlify.app
+2. En Google Firebase:
+    + Ir a [firebase](https://console.firebase.google.com)
+    + Ir al proyecto **api-firebase**.
+    + Ir a **Authentication** y luego a **Sign-in method**.
+    + En **Dominios autorizado** presionar en **Agregar un dominio** y agregar: https://firebase-api-hspp.netlify.app
+
+### 123. Refresh 404 Hosting Netlify
++ **Nota**: si al hacer refresh en su sitio web desplegado en Netlify con el modo History de vue, tira un 404, seguir los siguientes pasos:
+    + Crear archivo **09api_auth_firebase\public\_redirects**:
+        ```
+        /* /index.html  200
+        ```
+    + Compilar nuevamente:
+        + $ cd 09api_auth_firebase
+        + $ npm run build
+    + Subir nuevamente el proyecto a Netlify.
+
+### 124. Mensajes error Firebase
+1. Modificar tienda **09api_auth_firebase\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+    import router from '../router'
+
+    export default createStore({
+        state: {
+            tareas: [],
+            tarea: {
+                id: '',
+                nombre: '',
+                categorias: [],
+                estado: '',
+                numero: 0
+            },
+            user: null,
+            error: {
+                tipo: null,
+                mensaje: null
+            },
+        },
+        mutations: {
+            setError(state, payload) {
+                if(payload === null) {
+                    return state.error = { tipo: null, mensaje: null}
+                }
+                if(payload === "EMAIL_NOT_FOUND") {
+                    return state.error = { tipo: 'email', mensaje: 'Email no registrado'}
+                }
+                if(payload === "INVALID_PASSWORD") {
+                    return state.error = { tipo: 'password', mensaje: 'Contraseña incorrecta'}
+                }
+                if(payload === "EMAIL_EXISTS") {
+                    return state.error = { tipo: 'email', mensaje: 'El email ya existe'}
+                }
+                if(payload === "INVALID_EMAIL") {
+                    return state.error = { tipo: 'email', mensaje: 'Email no válido'}
+                }
+            },
+            setUser(state, payload) {
+                state.user = payload
+            },
+            cargar(state, payload) {
+                state.tareas = payload
+            },
+            set(state, payload){
+                state.tareas.push(payload)
+            },
+            eliminar(state, payload){
+                state.tareas = state.tareas.filter(tarea => tarea.id !== payload)
+            },
+            tarea(state, payload) {
+                if(!state.tareas.find(tarea => tarea.id === payload)){
+                    router.push('/')
+                    return
+                }
+                state.tarea = state.tareas.find(tarea => tarea.id === payload)
+            },
+            update(state, payload) {
+                state.tarea =state.tareas.map(tarea => tarea.id === payload.id ? payload : tarea)
+                router.push('/')
+            }
+        },
+        actions: {
+            cerrarSesion({ commit }) {
+                commit('setUser', null)
+                router.push('/ingreso')
+                localStorage.removeItem('usuario')
+            },
+            async ingresoUsuario({ commit }, user) {
+                try {
+                    // [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+                    const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            email: user.email,
+                            password: user.password,
+                            returnSecureToken: true
+                        })
+                    })
+                    const userDB = await res.json()
+                    if(userDB.error) {
+                        console.log(userDB.error)
+                        return commit('setError', userDB.error.message)
+                    }
+                    commit('setUser', userDB)
+                    commit('setError', null)
+                    router.push('/')
+                    localStorage.setItem('usuario', JSON.stringify(userDB))
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async registrarUsuario({ commit }, user) {
+                try {
+                    // [API_KEY] = AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0
+                    const res = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCAivWG3bdgjEZDHpsaCv2kX2FuiC0m9Z0' , {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            email: user.email,
+                            password: user.password,
+                            returnSecureToken: true
+                        })
+                    })
+                    const userDB = await res.json()
+                    if(userDB.error) {
+                        console.log(userDB.error)
+                        return commit('setError', userDB.error.message)
+                    }
+                    commit('setUser', userDB)
+                    commit('setError', null)
+                    router.push('/')
+                    localStorage.setItem('usuario', JSON.stringify(userDB))
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async cargarLocalStorage({ commit, state }){
+                if(localStorage.getItem('usuario')){
+                    commit('setUser', JSON.parse(localStorage.getItem('usuario')))
+                } else {
+                    return commit('setUser', null)
+                }
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}.json?auth=${state.user.idToken}`)
+                    const dataDB = await res.json()
+                    
+                    const tareas = []
+                    console.log('Table:', dataDB)
+                    for (let id in dataDB){
+                        tareas.push(dataDB[id])
+                    }
+                    commit('cargar', tareas)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            async setTareas({ commit, state }, tarea) {
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(tarea)
+                    })
+                    const dataDB = await res.json()
+                    console.log(dataDB)
+                } catch (error) {
+                    console.log(error)
+                }
+                commit('set', tarea)
+            },
+            async deleteTareas({ commit, state }, id) {
+                try {
+                    await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${id}.json?auth=${state.user.idToken}`, {
+                        method: 'DELETE'
+                    })
+                    commit('eliminar', id)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            setTarea({ commit }, id) {
+                commit('tarea', id)
+            },
+            async updateTarea({ commit, state }, tarea) {
+                try {
+                    const res = await fetch(`https://api-firebase-56408-default-rtdb.firebaseio.com/tareas/${state.user.localId}/${tarea.id}.json?auth=${state.user.idToken}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(tarea)
+                    })
+                    const dataDB = await res.json()
+                    commit('update', tarea)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+        },
+        getters: {
+            usuarioAutenticado(state) {
+                return !!state.user		// Si user existe retornará true
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+2. Modificar componente **09api_auth_firebase\src\views\Ingreso.vue**:
+    ```vue
+    <template>
+        <h1 class="my-5">Ingreso de usuarios</h1>
+        <div class="alert alert-danger" v-if="error.tipo !== null">
+            {{ error.mensaje }}
+        </div>
+        <form @submit.prevent="procesarFormulario">
+            <input 
+                type="email" 
+                placeholder="email" 
+                class="form-control my-2" 
+                v-model.trim="email"
+                :class="[error.tipo === 'email' ? 'is-invalid' : '']"
+            >
+            <input 
+                type="password" 
+                placeholder="password" 
+                class="form-control my-2" 
+                v-model.trim="pass1"
+                :class="[error.tipo === 'password' ? 'is-invalid' : '']"
+            >
+            <button type="submit" class="btn btn-primary" :disabled="bloquear">Ingresar</button>
+        </form>
+    </template>
+
+    <script>
+    import { mapActions, mapState } from 'vuex'
+
+    export default {
+        data() {
+            return {
+                email: '',
+                pass1: ''
+            }
+        },
+        computed: {
+            bloquear(){
+                if(!this.email.includes('@')){
+                    return true
+                }
+                if(this.pass1.length > 5){
+                    return false
+                }
+                return true
+            },
+            ...mapState(['error'])
+        },
+        methods: {
+            ...mapActions(['ingresoUsuario']),
+            async procesarFormulario() {
+                await this.ingresoUsuario({ email: this.email, password: this.pass1 })
+                if(this.error.tipo !== null){
+                    return
+                }
+
+                // Limpiar formulario
+                this.email = ''
+                this.pass1 = ''
+            }
+        }
+    }
+    </script>
+    ```
+3. Modificar componente **09api_auth_firebase\src\views\Registro.vue**:
+    ```vue
+    <template>
+        <h1 class="my-5">Registro de usuarios</h1>
+        <div class="alert alert-danger" v-if="error.tipo !== null">
+            {{ error.mensaje }}
+        </div>
+        <form @submit.prevent="procesarFormulario">
+            <input 
+                type="email" 
+                placeholder="email" 
+                class="form-control my-2" 
+                v-model.trim="email"
+                :class="[error.tipo === 'email' ? 'is-invalid' : '']"
+            >
+            <input type="password" placeholder="password" class="form-control my-2" v-model.trim="pass1">
+            <input type="password" placeholder="password" class="form-control my-2" v-model.trim="pass2">
+            <button type="submit" class="btn btn-primary" :disabled="bloquear">Registrar</button>
+        </form>
+    </template>
+
+    <script>
+    import { mapActions, mapState } from 'vuex'
+
+    export default {
+        data() {
+            return {
+                email: '',
+                pass1: '',
+                pass2: ''
+            }
+        },
+        computed: {
+            bloquear(){
+                if(!this.email.includes('@')){
+                    return true
+                }
+                if(this.pass1.length > 5 && this.pass1 === this.pass2){
+                    return false
+                }
+                return true
+            },
+            ...mapState(['error'])
+        },
+        methods: {
+            ...mapActions(['registrarUsuario']),
+            async procesarFormulario() {
+                await this.registrarUsuario({ email: this.email, password: this.pass1 })
+                if(this.error.tipo !== null){
+                    return
+                }
+
+                // Limpiar formulario
+                this.email = ''
+                this.pass1 = ''
+                this.pass2 = ''
+            }
+        }
+    }
+    </script>
+    ```
+
+### 125. Archivos Terminados de esta sección
++ Código fuente: 00recursos\API+AUTH+Firebase.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "API Auth Firebase - Rutas protegidas"
++ $ git push -u origin main
+
+
+## Sección 12: Composition API - Fundamentos
+### 126. Composition API - Introducción
+
 
 
 
@@ -3059,42 +4212,8 @@
     ```
 
 
-### 109. Importante - Recomendación
-1 min
-### 110. Reglas de seguridad Firebase
-3 min
-### 111. Formulario Registro con Validaciones en Vue.js
-11 min
-### 112. Registrar usuario en Firebase
-18 min
-### 113. ¿No ves la API KEY?
-1 min
-### 114. Corrección error video anterior + commit de usuario
-2 min
-### 115. Ingreso de usuario (Login)
-11 min
-### 116. Reglas de seguridad Firebase
-13 min
-### 117. Getters: Ocultar enlaces navbar
-5 min
-### 118. Cerrar sesión
-3 min
-### 119. Router: Rutas protegidas
-7 min
-### 120. Guardar Token en LocalStorage
-7 min
-### 121. Hosting Firebase
-7 min
-### 122. Hosting Netlify
-2 min
-### 123. Refresh 404 Hosting Netlify
-1 min
-### 124. Mensajes error Firebase
-18 min
-### 125. Archivos Terminados de esta sección
-1 min
-### 126. Composition API - Introducción
-1 min
+
+
 ### 127. ¿Por qué utilizar Composition API?
 6 min
 ### 128. Setup, Ref y Métodos
