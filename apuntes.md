@@ -1,5 +1,5 @@
 # Vue js 3 [Actualizado] ¡De 0 a Experto! + Firebase + MEVN
-+ [URL del curso en Coders Free](https://www.udemy.com/course/curso-vue)
++ [URL del curso en Udemy](https://www.udemy.com/course/curso-vue)
 + [URL del repositorio en GitHub](https://github.com/petrix12/vue2022.git)
 
 
@@ -4202,6 +4202,758 @@
 
 ## Sección 12: Composition API - Fundamentos
 ### 126. Composition API - Introducción
++ **Contenido**: introducción a la sección.
+
+### 127. ¿Por qué utilizar Composition API?
+1. Crear proyecto **10composition_api**:
+    + $ vue create 10composition_api
+    + Seleccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+        + (*) Router
+        + (*) Vuex
+    + Choose a version of Vue.js that you want to start the project with (Use arrow keys): 3.x
+    + Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n): y
+    + Where do you prefer placing config for Babel, ESLint, etc.? (Use arrow keys): In dedicated config files
+    + Save this as a preset for future projects? (y/N): n
+2. Modificar vista **10composition_api\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+        </div>
+    </template>
+
+    <script>
+    export default {
+    }
+    </script>
+    ```
+
+### 128. Setup, Ref y Métodos
+1. Modificar vista **10composition_api\src\views\Home.vue** (Ejemplo de **Options API**):
+    ```vue
+    <template>
+        <div class="home">
+            <h1>Contador: {{ contador }}</h1>
+            <button @click="aumentar">+</button>
+            <button @click="disminuir">-</button>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        data() {
+            return {
+                contador: 0
+            }
+        },
+        methods: {
+            aumentar() {
+                this.contador++
+            },
+            disminuir() {
+                this.contador--
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **10composition_api\src\views\About.vue** (Ejemplo de **Compositions API**):
+    ```vue
+    <template>
+        <div class="about">
+            <h1>Contador: {{ contador }}</h1>
+            <button @click="aumentar">+</button>
+            <button @click="disminuir">-</button>
+        </div>
+    </template>
+
+    <script>
+    import { ref } from 'vue'
+
+    export default {
+        setup() {
+            // Variables
+            const contador = ref(0)
+
+            // Métodos
+            const aumentar = () => {
+                contador.value++
+            }
+            const disminuir = () => {
+                contador.value--
+            }
+
+            // Retorno de variables y métodos
+            return {
+                contador,
+                aumentar,
+                disminuir
+            }
+        }
+    }
+    </script>
+    ```
+
+### 129. Propiedades computadas (computed)
+1. Modificar vista **10composition_api\src\views\Home.vue** (Ejemplo de **Options API**):
+    ```vue
+    <template>
+        <div class="home">
+            <h1 :style="{'color': color}">Contador: {{ contador }}</h1>
+            <button @click="aumentar">+</button>
+            <button @click="disminuir">-</button>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        data() {
+            return {
+                contador: 0
+            }
+        },
+        computed: {
+            color() {
+                return this.contador < 0 ? 'red' : 'blue'
+            }
+        },
+        methods: {
+            aumentar() {
+                this.contador++
+            },
+            disminuir() {
+                this.contador--
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **10composition_api\src\views\About.vue** (Ejemplo de **Compositions API**):
+    ```vue
+    <template>
+        <div class="about">
+            <h1 :style="{'color': color}">Contador: {{ contador }}</h1>
+            <button @click="aumentar">+</button>
+            <button @click="disminuir">-</button>
+        </div>
+    </template>
+
+    <script>
+    import { computed, ref } from 'vue'
+
+    export default {
+        setup() {
+            // Variables
+            const contador = ref(0)
+
+            // Propiedades computadas
+            const color = computed(() => contador.value < 0 ? 'red' : 'blue')
+
+            // Métodos
+            const aumentar = () => {
+                contador.value++
+            }
+            const disminuir = () => {
+                contador.value--
+            }
+
+            // Retorno de variables y métodos
+            return {
+                contador,
+                color,
+                aumentar,
+                disminuir
+            }
+        }
+    }
+    </script>
+    ```
+
+### 130. v-model
+1. Modificar vista **10composition_api\src\views\About.vue** (Ejemplo de **Compositions API**):
+    ```vue
+    <template>
+        <div>
+            <div class="about">
+                <h1 :style="{'color': color}">Contador: {{ contador }}</h1>
+                <button @click="aumentar">+</button>
+                <button @click="disminuir">-</button>
+            </div>
+            <hr>
+            <input type="text" v-model="texto">
+            <p>{{ texto }}</p>
+        </div>
+    </template>
+
+    <script>
+    import { computed, ref } from 'vue'
+
+    export default {
+        setup() {
+            // Variables
+            const contador = ref(0)
+            const texto = ref('')
+
+            // Propiedades computadas
+            const color = computed(() => contador.value < 0 ? 'red' : 'blue')
+
+            // Métodos
+            const aumentar = () => {
+                contador.value++
+            }
+            const disminuir = () => {
+                contador.value--
+            }
+
+            // Retorno de variables y métodos
+            return {
+                contador,
+                texto,
+                color,
+                aumentar,
+                disminuir
+            }
+        }
+    }
+    </script>
+    ```
+
+### 131. Props - Comunicación entre componentes
+1. Crear componente **10composition_api\src\components\Titulo.vue**:
+    ```vue
+    <template>
+        <h1 :style="{'color': color}">Contador: {{ signoPeso }}</h1>
+    </template>
+
+    <script>
+    import { computed } from 'vue'
+
+    export default {
+        props: ['contador', 'color'],
+
+        /* computed: {
+            signoPeso() {
+                return '$' + this.contador
+            }
+        } */
+
+        setup(props) {
+            const signoPeso = computed(() => {
+                return '$' + props.contador
+            })
+
+            return {
+                signoPeso
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **10composition_api\src\views\About.vue** (Ejemplo de **Compositions API**):
+    ```vue
+    <template>
+        <div>
+            <div class="about">
+                <Titulo :contador="contador" :color="color" />
+                <!-- <h1 :style="{'color': color}">Contador: {{ contador }}</h1> -->
+                <button @click="aumentar">+</button>
+                <button @click="disminuir">-</button>
+            </div>
+            <hr>
+            <input type="text" v-model="texto">
+            <p>{{ texto }}</p>
+        </div>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    import { computed, ref } from 'vue'
+
+    export default {
+        components: {
+            Titulo
+        },
+        setup() {
+            // Variables
+            const contador = ref(0)
+            const texto = ref('')
+
+            // Propiedades computadas
+            const color = computed(() => contador.value < 0 ? 'red' : 'blue')
+
+            // Métodos
+            const aumentar = () => {
+                contador.value++
+            }
+            const disminuir = () => {
+                contador.value--
+            }
+
+            // Retorno de variables y métodos
+            return {
+                contador,
+                texto,
+                color,
+                aumentar,
+                disminuir
+            }
+        }
+    }
+    </script>
+    ```
+
+### 132. emit: Comunicación del hijo al padre (componentes)
+1. Crear componente **10composition_api\src\components\Btn.vue**:
+    ```vue
+    <template>
+        <!-- <button @click="$emit('accion')">{{ textoBoton }}</button> -->
+        <button @click="accionHijo">{{ textoBoton }}</button>
+    </template>
+
+    <script>
+    export default {
+        props: ['textoBoton'],
+        setup(props, context) {
+            const accionHijo = () => {
+                context.emit('accion')
+            }
+
+            return {
+                accionHijo
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **10composition_api\src\views\About.vue**:
+    ```vue
+    <template>
+        <div>
+            <div class="about">
+                <Titulo :contador="contador" :color="color" />
+                <!-- <button @click="aumentar">+</button>
+                <button @click="disminuir">-</button> -->
+                <Btn :textoBoton="'+'" @accion="aumentar" />
+                <Btn :textoBoton="'-'" @accion="disminuir" />
+            </div>
+            <hr>
+            <input type="text" v-model="texto">
+            <p>{{ texto }}</p>
+        </div>
+    </template>
+
+    <script>
+    import Titulo from '../components/Titulo'
+    import Btn from '../components/Btn'
+    import { computed, ref } from 'vue'
+
+    export default {
+        components: {
+            Titulo,
+            Btn
+        },
+        ≡
+    }
+    </script>
+    ```
+
+### 133. Reutilizando lógica de componentes
+1. Crear vista **10composition_api\src\views\Contador.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>Contador: {{ contador }}</h1>
+            <Btn :textoBoton="'+'" @accion="aumentar" />
+            <Btn :textoBoton="'-'" @accion="disminuir" />
+        </div>
+    </template>
+
+    <script>
+    import Btn from '../components/Btn'
+    import { useContador } from '../hooks/useContador'
+
+    export default {
+        components: {
+            Btn
+        },
+        setup() {
+            return { ...useContador() }
+        }
+    }
+    </script>
+    ```
+2. Crear **10composition_api\src\hooks\useContador.js**:
+    ```js
+    import { ref } from 'vue'
+
+    export function useContador() {
+        // Variables
+        const contador = ref(0)
+
+        // Métodos
+        const aumentar = () => {
+            contador.value++
+        }
+        const disminuir = () => {
+            contador.value--
+        }
+
+        // Retorno de variables y métodos
+        return {
+            contador,
+            aumentar,
+            disminuir
+        }
+    }
+    ```
+3. Modificar archivo de rutas **10composition_api\src\router\index.js**:
+    ```js
+    ≡
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: Home
+        },
+        {
+            path: '/about',
+            name: 'About',
+            component: () => import('../views/About.vue')
+        },
+        {
+            path: '/contador',
+            name: 'Contador',
+            component: () => import('../views/Contador.vue')
+        }
+    ]
+    ≡
+    ```
+4. Modificar componente principal **10composition_api\src\App.vue**:
+    ```vue
+    <template>
+        <div id="nav">
+            <router-link to="/">Home</router-link> |
+            <router-link to="/about">About</router-link> |
+            <router-link to="/contador">Contador</router-link>
+        </div>
+        <router-view/>
+    </template>
+    ≡
+    ```
+
+### 134. Práctica consumir API Pública (fetch y onMounted)
+1. Crear **10composition_api\public\api.json**:
+    ```json
+    [
+        {
+            "name": "Afghanistan",
+            "topLevelDomain": [
+                ".af"
+            ],
+            "alpha2Code": "AF",
+            "alpha3Code": "AFG",
+            "callingCodes": [
+                "93"
+            ],
+            "capital": "Kabul",
+            "altSpellings": [
+                "AF",
+                "Afġānistān"
+            ],
+            "region": "Asia",
+            "subregion": "Southern Asia",
+            "population": 27657145,
+            "latlng": [
+                33,
+                65
+            ],
+            "demonym": "Afghan",
+            "area": 652230,
+            "gini": 27.8,
+            "timezones": [
+                "UTC+04:30"
+            ],
+            "borders": [
+                "IRN",
+                "PAK",
+                "TKM",
+                "UZB",
+                "TJK",
+                "CHN"
+            ],
+            "nativeName": "افغانستان",
+            "numericCode": "004",
+            "currencies": [
+                {
+                    "code": "AFN",
+                    "name": "Afghan afghani",
+                    "symbol": "؋"
+                }
+            ],
+            "languages": [
+                {
+                    "iso639_1": "ps",
+                    "iso639_2": "pus",
+                    "name": "Pashto",
+                    "nativeName": "پښتو"
+                },
+                {
+                    "iso639_1": "uz",
+                    "iso639_2": "uzb",
+                    "name": "Uzbek",
+                    "nativeName": "Oʻzbek"
+                },
+                {
+                    "iso639_1": "tk",
+                    "iso639_2": "tuk",
+                    "name": "Turkmen",
+                    "nativeName": "Türkmen"
+                }
+            ],
+            "translations": {
+                "de": "Afghanistan",
+                "es": "Afganistán",
+                "fr": "Afghanistan",
+                "ja": "アフガニスタン",
+                "it": "Afghanistan",
+                "br": "Afeganistão",
+                "pt": "Afeganistão",
+                "nl": "Afghanistan",
+                "hr": "Afganistan",
+                "fa": "افغانستان"
+            },
+            "flag": "https://restcountries.eu/data/afg.svg",
+            "regionalBlocs": [
+                {
+                    "acronym": "SAARC",
+                    "name": "South Asian Association for Regional Cooperation",
+                    "otherAcronyms": [],
+                    "otherNames": []
+                }
+            ],
+            "cioc": "AFG"
+        },
+        {
+            "name": "Åland Islands",
+            ≡
+        },
+        ≡
+    ]
+    ```
+    + **Nota**: descargar archivo completo del repositorio.
+2. Crear vista **10composition_api\src\views\Paises.vue**:
+    ```vue
+    <template>
+        <h1>Lista de paises</h1>
+        <p v-for="(pais, index) in paises" :key="index">{{ pais.name }}</p>
+    </template>
+
+    <script>
+    import { onMounted, ref } from 'vue'
+
+    export default {
+        setup() {
+            const paises = ref([])
+
+            onMounted(async() => {
+                try {
+                    /* const res = await fetch('https://restcountries.eu/rest/v2/all') */
+                    const res = await fetch('api.json')
+                    paises.value = await res.json()
+                } catch (error) {
+                    console.log(error)
+                }
+            })
+
+            /* const fetchData = async() => {
+                try {
+                    // const res = await fetch('https://restcountries.eu/rest/v2/all')
+                    const res = await fetch('api.json')
+                    paises.value = await res.json()
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+            fetchData() */
+
+            return {
+                paises
+            }
+        }
+    }
+    </script>
+    ```
+3. Modificar archivo de rutas **10composition_api\src\router\index.js**:
+    ```js
+    ≡
+    const routes = [
+        ≡
+        {
+            path: '/paises',
+            name: 'Paises',
+            component: () => import('../views/Paises.vue')
+        }
+    ]
+    ≡
+    ```
+4. Modificar componente principal **10composition_api\src\App.vue**:
+    ```vue
+    <template>
+        <div id="nav">
+            <router-link to="/">Home</router-link> |
+            <router-link to="/about">About</router-link> |
+            <router-link to="/contador">Contador</router-link> |
+            <router-link to="/paises">Paises</router-link>
+        </div>
+        <router-view/>
+    </template>
+    ≡
+    ```
+
+### 135. Params en setup()
+1. Modificar archivo de rutas **10composition_api\src\router\index.js**:
+    ```js
+    ≡
+    const routes = [
+        ≡
+        {
+            path: '/paises/:nombre',
+            name: 'Pais',
+            props: true,
+            component: () => import('../views/Pais.vue')
+        }
+    ]
+    ≡
+    ```
+2. Crear vista **10composition_api\src\views\Pais.vue**:
+    ```vue
+    <template>
+        <div>
+            <!-- <h1>Detalle: {{ $route.params.nombre }}</h1> -->
+            <h1>Detalle: {{ nombre }}</h1>
+        </div>
+    </template>
+
+    <script>
+    import { useRoute } from 'vue-router'
+    export default {
+        props: ['nombre'],
+        setup(props) {
+            console.log(props.nombre)
+            const nombreParams = useRoute()
+            console.log(nombreParams.params.nombre)
+        }
+    }
+    </script>
+    ```
+3. Modificar vista **10composition_api\src\views\Paises.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>Lista de paises</h1>
+            <p v-for="(pais, index) in paises" :key="index">
+                <router-link :to="`/paises/${pais.name}`">
+                    {{ pais.name }}
+                </router-link>
+            </p>
+        </div>
+    </template>
+    ```
+
+### 136. Hooks - Reutilización
+1. Crear **10composition_api\src\hooks\useFetch.js**:
+    ```js
+    import { onMounted, ref } from 'vue'
+
+    export function useFetch(url) {
+        const paises = ref([])
+
+        onMounted(async() => {
+            try {
+                const res = await fetch(url)
+                paises.value = await res.json()
+            } catch (error) {
+                console.log(error)
+            }
+        })
+
+        return {
+            paises
+        }
+    }
+    ```
+2. Modificar vista **10composition_api\src\views\Paises.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>Lista de paises</h1>
+            <p v-for="(pais, index) in paises" :key="index">
+                <router-link :to="`/paises/${pais.name}`">
+                    {{ pais.name }}
+                </router-link>
+            </p>
+        </div>
+    </template>
+
+    <script>
+    import { useFetch } from '../hooks/useFetch'
+
+    export default {
+        setup() {
+            return {
+                /* ...useFetch('https://restcountries.eu/rest/v2/all') */
+                ...useFetch('api.json')
+            }
+        }
+    }
+    </script>
+    ```
+3. Modificar vista **10composition_api\src\views\Pais.vue**:
+    ```vue
+    <template>
+        <div>
+            <!-- <h1>Detalle: {{ $route.params.nombre }}</h1> -->
+            <h1>Detalle: {{ nombre }}</h1>
+            <p v-for="(pais, index) in arrayData" :key="index">
+                {{ pais.name }} - {{ pais.region }}
+            </p>
+        </div>
+    </template>
+
+    <script>
+    import { useFetch } from '../hooks/useFetch'
+    import { useRoute } from 'vue-router'
+
+    export default {
+        props: ['nombre'],
+        setup(props) {
+            /* console.log(props.nombre) */
+            const nombreParams = useRoute()
+            console.log(nombreParams.params.nombre)
+            const { arrayData } = useFetch(`https://restcountries.eu/rest/v2/${nombreParams.params.nombre}`)
+
+            return {
+                arrayData
+            }
+        }
+    }
+    </script>
+    ```
+
+### 137. Archivos Terminados de esta sección
++ **Código fuente de esta sección**: 00recursos\composition-fundamentos.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Composition API - Fundamentos"
++ $ git push -u origin main
+
+
+## Sección 13: Vuex y Composition API
+### 138. Introducción a Vuex y Composition API
+
 
 
 
@@ -4214,30 +4966,6 @@
 
 
 
-### 127. ¿Por qué utilizar Composition API?
-6 min
-### 128. Setup, Ref y Métodos
-9 min
-### 129. Propiedades computadas (computed)
-4 min
-### 130. v-model
-2 min
-### 131. Props - Comunicación entre componentes
-8 min
-### 132. emit: Comunicación del hijo al padre (componentes)
-6 min
-### 133. Reutilizando lógica de componentes
-10 min
-### 134. Práctica consumir API Pública (fetch y onMounted)
-10 min
-### 135. Params en setup()
-6 min
-### 136. Hooks - Reutilización
-7 min
-### 137. Archivos Terminados de esta sección
-1 min
-### 138. Introducción a Vuex y Composition API
-1 min
 ### 139. Instalación de Vue 3 + Vuex
 3 min
 ### 140. URL API
