@@ -4953,6 +4953,991 @@
 
 ## Sección 13: Vuex y Composition API
 ### 138. Introducción a Vuex y Composition API
++ https://bluuweb.github.io/vue-udemy/21-vuex-composition
++ https://next.vuex.vuejs.org/guide/composition-api.html#accessing-state-and-getters
++ **Contenido**: sobre la aplicación que desarrollaremos en esta sección.
+
+### 139. Instalación de Vue 3 + Vuex
+1. Crear proyecto **11api_banderas**:
+    + $ vue create 11api_banderas
+    + Seleccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+        + (*) Vuex
+    + Choose a version of Vue.js that you want to start the project with (Use arrow keys): 3.x
+    + Where do you prefer placing config for Babel, ESLint, etc.? (Use arrow keys): In dedicated config files
+    + Save this as a preset for future projects? (y/N): n
+2. Modificar **11api_banderas\src\App.vue**:
+    ```vue
+    <template>
+        <div>
+            api Paises
+        </div>
+    </template>
+
+    <script>
+    export default {
+        name: 'App',
+        components: {
+        }
+    }
+    </script>
+    ```
+3. Eliminar los siguientes archivos:
+    + 11api_banderas\src\components\HelloWorld.vue
+    + 11api_banderas\src\assets\logo.png
+4. Modificar **11api_banderas\public\index.html** para incorporar Bootstrap:
+    ```html
+    ≡
+    <head>
+        ≡
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    </head>
+    ≡
+    ```
+
+### 140. URL API
+1. Aquí puedes revisar la lista de todos los paises en la v3 de la API:
+    + https://restcountries.com/v3/all
+    + **Nota**: La versión 2 utilizada está con problemas, así que recomiendo utilizar la v3
+2. Crear **11api_banderas\public\api-paises.json**:
+    ```json
+    [
+        {
+            "name": {
+                "common": "Djibouti",
+                "official": "Republic of Djibouti",
+                "nativeName": {
+                    "ara": {
+                        "official": "جمهورية جيبوتي",
+                        "common": "جيبوتي‎"
+                    },
+                    "fra": {
+                        "official": "République de Djibouti",
+                        "common": "Djibouti"
+                    }
+                }
+            },
+            ≡
+        }
+        ≡
+    ]
+    ```
+    + **Nota**: descargar archivo completo del repositorio.
+
+### 141. Composition API - Actions
+1. Modificar componente principal **11api_banderas\src\App.vue**:
+    ```vue
+    <template>
+        <div class="container">
+            <h1 class="text-center">Paises API</h1>
+            <CardList />
+        </div>
+    </template>
+
+    <script>
+    import CardList from './components/CardList'
+    export default {
+        name: 'App',
+        components: {
+            CardList
+        }
+    }
+    </script>
+    ```
+2. Crear componente **11api_banderas\src\components\CardList.vue**:
+    ```vue
+    <template>
+        <div class="row">
+            <div class="col-12">
+                Card
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { useStore } from 'vuex'
+    import { onMounted } from 'vue'
+
+    export default {
+        setup() {
+            const store = useStore()
+            onMounted(() => {
+                store.dispatch('getPaises')
+            })
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+3. Modificar tienda **11api_banderas\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            paises: [],
+            paisesFiltrados: []
+        },
+        mutations: {
+            setPaises(state, payload) {
+                state.paises = payload
+            },
+            setPaisesFiltrados(state, payload) {
+                state.paisesFiltrados = payload
+            }
+        },
+        actions: {
+            async getPaises({ commit }) {
+                try {
+                    const res = await fetch('https://restcountries.com/v2/all')
+                    const data = await res.json()
+                    // console.log(data)
+                    commit('setPaises', data)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+
+### 142. Composition API - State
+1. Modificar componente **11api_banderas\src\components\CardList.vue**:
+    ```vue
+    <template>
+        <div class="row">
+            <div class="col-12">
+                {{ paises }}
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { useStore } from 'vuex'
+    import { computed, onMounted } from 'vue'
+
+    export default {
+        setup() {
+            const store = useStore()
+
+            const paises = computed(() => {
+                return store.state.paises
+            })
+
+            onMounted(() => {
+                store.dispatch('getPaises')
+            })
+
+            return {
+                paises
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
+### 143. Configurar Getters
+1. Modificar tienda **11api_banderas\src\store\index.js**:
+    ```js
+    ≡
+    export default createStore({
+        ≡
+        getters: {
+            topPaisesPoblacion(state) {
+                return state.paises.sort((a, b) => {
+                    return a.population < b.population ? 1 : -1
+                })
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+2. Modificar componente **11api_banderas\src\components\CardList.vue**:
+    ```vue
+    ≡
+    setup() {
+        const store = useStore()
+
+        const paises = computed(() => {
+            return store.getters.topPaisesPoblacion
+        })
+
+        onMounted(() => {
+            store.dispatch('getPaises')
+        })
+
+        return {
+            paises
+        }
+    }
+    ≡
+    ```
+
+### 144. Composition API - Getters
+1. Modificar componente **11api_banderas\src\components\CardList.vue**:
+    ```vue
+    <template>
+        <div class="row">
+            <div class="col-12" v-for="pais in paises" :key="pais.name">
+                <Card :pais="pais" />
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { useStore } from 'vuex'
+    import { computed, onMounted } from 'vue'
+    import Card from './Card'
+
+    export default {
+        components: {
+            Card
+        },
+        ≡
+    }
+    </script>
+    ≡
+    ```
+2. Crear componente **11api_banderas\src\components\Card.vue**:
+    ```vue
+    <template>
+        <div class="card">
+            <div class="card-body">
+                <h5>{{ pais.name }}</h5>
+                <p class="cart-text">
+                    <span class="badge bg-secondary d-block mb-1">nativeName: {{ pais.nativeName }}</span>
+                    <span class="badge bg-info p-3 d-block mb-1">population: {{ pais.population }}</span>
+                    <span class="badge bg-secondary d-block mb-1">capital: {{ pais.capital }}</span>
+                    <span class="badge bg-secondary d-block mb-1">region: {{ pais.region }}</span>
+                </p>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        props: ['pais']
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
+### 145. Formatear número
+1. Modificar componente **11api_banderas\src\components\Card.vue**:
+    ```vue
+    <template>
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5>{{ pais.name }}</h5>
+                <p class="cart-text">
+                    <span class="badge bg-secondary d-block mb-1">nativeName: {{ pais.nativeName }}</span>
+                    <span class="badge bg-info p-3 d-block mb-1">population: {{ numeroFormato(pais.population) }}</span>
+                    <span class="badge bg-secondary d-block mb-1">capital: {{ pais.capital }}</span>
+                    <span class="badge bg-secondary d-block mb-1">region: {{ pais.region }}</span>
+                </p>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        props: ['pais'],
+        setup() {
+            const numeroFormato = (num) => {
+                return new Intl.NumberFormat("de-DE").format(num)
+            }
+
+            return {
+                numeroFormato
+            }
+        }
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+
+### 146. Pintar Banderas
+1. Modificar componente **11api_banderas\src\components\Card.vue**:
+    ```vue
+    ≡
+    <div class="card-body">
+        <h5 class="text-center">{{ pais.name }}</h5>
+        <p class="text-center">
+            <img :src="pais.flag" :alt="`bandera-${pais.name}`" class="img-fluid w-50">
+        </p>
+        <p class="cart-text">
+            <span class="badge bg-secondary d-block mb-1">nativeName: {{ pais.nativeName }}</span>
+            <span class="badge bg-info p-3 d-block mb-1">population: {{ numeroFormato(pais.population) }}</span>
+            <span class="badge bg-secondary d-block mb-1">capital: {{ pais.capital }}</span>
+            <span class="badge bg-secondary d-block mb-1">region: {{ pais.region }}</span>
+        </p>
+    </div>
+    ≡
+    ```
+
+### 147. Vuex - Filtrar países
+1. Crear componente **11api_banderas\src\components\Continentes.vue**:
+    ```vue
+    <template>
+        <div class="text-center">
+            <h3>Continentes</h3>
+            <div class="btn-group mb-3">
+                <button class="btn btn-secondary">AM</button>
+                <button class="btn btn-secondary">EU</button>
+                <button class="btn btn-secondary">AS</button>
+                <button class="btn btn-secondary">OC</button>
+                <button class="btn btn-secondary">AF</button>
+                <button class="btn btn-secondary">ALL</button>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    export default {
+
+    }
+    </script>
+    ```
+2. Modificar componente principal **11api_banderas\src\App.vue**:
+    ```vue
+    <template>
+        <div class="container">
+            <h1 class="text-center">Paises API</h1>
+            <Continentes />
+            <CardList />
+        </div>
+    </template>
+
+    <script>
+    import CardList from './components/CardList'
+    import Continentes from './components/Continentes'
+
+    export default {
+        name: 'App',
+        components: {
+            CardList,
+            Continentes
+        }
+    }
+    </script>
+    ```
+3. Modificar tienda **11api_banderas\src\store\index.js**:
+    ```js
+    import { createStore } from 'vuex'
+
+    export default createStore({
+        state: {
+            paises: [],
+            paisesFiltrados: []
+        },
+        mutations: {
+            setPaises(state, payload) {
+                state.paises = payload
+            },
+            setPaisesFiltrados(state, payload) {
+                state.paisesFiltrados = payload
+            }
+        },
+        actions: {
+            async getPaises({ commit }) {
+                try {
+                    // const res = await fetch('https://restcountries.com/v2/all')
+                    const res = await fetch('api.json')
+                    const data = await res.json()
+                    // console.log(data)
+                    commit('setPaises', data)
+                } catch (error) {
+                    console.log(error)
+                }
+            },
+            filtrarRegion({ commit, state }, region) {
+                const filtro = state.paises.filter(pais => pais.region.includes(region))
+                // Otra forma:
+                // const filtro = state.paises.filter(pais => pais.region === region)
+
+                commit('setPaisesFiltrados', filtro)
+            }
+        },
+        getters: {
+            topPaisesPoblacion(state) {
+                return state.paisesFiltrados.sort((a, b) => {
+                    return a.population < b.population ? 1 : -1
+                })
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+4. Modificar componente **11api_banderas\src\components\CardList.vue**:
+    ```vue
+    ≡
+    onMounted(async() => {
+        await store.dispatch('getPaises')
+        await store.dispatch('filtrarRegion', 'Americas')
+    })
+    ≡
+    ```
+
+### 148. Vuex - Filtrar por región
+1. Modificar componente **11api_banderas\src\components\Continentes.vue**:
+    ```vue
+    <template>
+        <div class="text-center">
+            <h3>Continentes</h3>
+            <div class="btn-group mb-3">
+                <button class="btn btn-secondary" @click="filtro('Americas')">AM</button>
+                <button class="btn btn-secondary" @click="filtro('Europe')">EU</button>
+                <button class="btn btn-secondary" @click="filtro('Asia')">AS</button>
+                <button class="btn btn-secondary" @click="filtro('Oceania')">OC</button>
+                <button class="btn btn-secondary" @click="filtro('Africa')">AF</button>
+                <button class="btn btn-secondary" @click="filtro('')">ALL</button>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { useStore } from 'vuex'
+
+    export default {
+        setup() {
+            const store = useStore()
+
+            const filtro = (region) => {
+                store.dispatch('filtrarRegion', region)
+            }
+
+            return {
+                filtro
+            }
+        }
+    }
+    </script>
+    ```
+
+### 149. KeyUp: Buscador en tiempo real
+1. Crear componente **11api_banderas\src\components\Buscador.vue**:
+    ```vue
+    <template>
+        <input 
+            type="text"
+            placeholder ="Ingrese país"
+            class="form-control my-3"
+            v-model="pais"
+            @keyup="procesarInput"
+        >
+    </template>
+
+    <script>
+    import { ref } from 'vue'
+
+    export default {
+        setup() {
+            const pais = ref('')
+
+            const procesarInput = () => {
+                console.log(pais.value)
+            }
+
+            return {
+                pais,
+                procesarInput
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista principal rutas **11api_banderas\src\App.vue**:
+    ```vue
+    <template>
+        <div class="container">
+            <h1 class="text-center">Paises API</h1>
+            <Continentes />
+            <Buscador />
+            <CardList />
+        </div>
+    </template>
+
+    <script>
+    import CardList from './components/CardList'
+    import Continentes from './components/Continentes'
+    import Buscador from './components/Buscador'
+
+    export default {
+        name: 'App',
+        components: {
+            CardList,
+            Continentes,
+            Buscador
+        }
+    }
+    </script>
+    ```
+
+### 150. Vuex - Buscador
+1. Modificar tienda **11api_banderas\src\store\index.js**:
+    ```js
+    ≡
+	actions: {
+		≡
+		filtrarPais({ commit, state }, texto) {
+			const textoCliente = texto.toLowerCase()
+			const filtro = state.paises.filter(pais => {
+				const textoApi = pais.name.toLowerCase()
+				if(textoApi.includes(textoCliente)) {
+					return pais
+				}
+			})
+			commit('setPaisesFiltrados', filtro)
+		}
+	},
+    ≡
+    ```
+2. Modificar componente **11api_banderas\src\components\Buscador.vue**:
+    ```vue
+    ≡
+    <script>
+    import { ref } from 'vue'
+    import { useStore } from 'vuex'
+
+    export default {
+        setup() {
+            const pais = ref('')
+            const store = useStore()
+
+            const procesarInput = () => {
+                // console.log(pais.value)
+                store.dispatch('filtrarPais', pais.value)
+            }
+
+            return {
+                pais,
+                procesarInput
+            }
+        }
+    }
+    </script>
+    ```
+
+### 151. Optimizar código (aporte estudiante)
++ Optimizar código sobre las funciones de acciones para filtrar:
+    ```js
+    function filtrarPor({ commit, state }, { propiedad, valor }) {
+        return state.paises.filter(pais => pais[propiedad].includes(valor))
+    }
+    ```
+
+### 152. Deploy a Hosting Gratuito
+1. Compilar el proyecto **11api_banderas**:
+    + $ npm run build
+2. Arrastrar carpeta **dist** a Netlify.
+
+### 153. Archivos Terminados de esta sección
++ Código fuente: 00recursos\Api+Banderas+Vue+3.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Vuex y Composition API"
++ $ git push -u origin main
+
+## Sección 14: PROVIDE E INJECT - Trabajando sin VUEX
+### 154. Instalación del proyecto con Vue 3
++ https://bluuweb.github.io/vue-udemy/22-provide
+1. Crear proyecto **12provide_app**:
+    + $ vue create 12provide_app
+    + Selccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+    + Choose a version of Vue.js that you want to start the project with: 3.x
+    + Seleccionar: In dedicated config files
+    + Save this as a preset for future projects? (y/N): n
+2. Modificar componente principal **12provide_app\src\App.vue**:
+    ```vue
+    <template>
+        <div>
+            Provide
+        </div>
+    </template>
+
+    <script>
+    export default {
+        name: 'App',
+        components: {
+        }
+    }
+    </script>
+    ```
+3. Eliminar archivos:
+    + 12provide_app\src\components\HelloWorld.vue
+    + 12provide_app\src\assets\logo.png
+
+### 155. Provide e Inject - Aprendiendo con la práctica
+1. Crear componente **12provide_app\src\components\ContadorUno.vue**:
+    ```vue
+    <template>
+        <div>
+            <h2>Contador: {{ contador }}</h2>
+        </div>
+    </template>
+
+    <script>
+    import { inject } from 'vue'
+
+    export default {
+        setup() {
+            const contador = inject('contador')
+
+            return {
+                contador
+            }
+        }
+    }
+    </script>
+    ```
+2. Crear componente **12provide_app\src\components\ContadorAccion.vue**:
+    ```vue
+    <template>
+        <div>
+            <button @click="contador++">+</button>
+            <button @click="disminuir">-</button>
+        </div>
+    </template>
+
+    <script>
+    import { inject } from 'vue'
+
+    export default {
+        setup() {
+            const contador = inject('contador')
+
+            const disminuir = () => contador.value--
+
+            return {
+                contador,
+                disminuir
+            }
+        }
+    }
+    </script>
+    ```
+
+### 156. Presentación del proyecto a realizar
++ **Contenido**: sobre el proyecto a desarrollar en el resto de la sección.
+
+### 157. Bootstrap 5 y FontAwersome 5
++ https://getbootstrap.com
++ https://cdnjs.com/libraries/font-awesome
+1. Crear proyecto **13tarea_provide**:
+    + $ vue create 13tarea_provide
+    + Seleccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+    + Choose a version of Vue.js that you want to start the project with: 3.x
+    + Seleccionar: In dedicated config files
+    + Save this as a preset for future projects? (y/N): n
+2. Modificar componente principal **13tarea_provide\src\App.vue**:
+    ```vue
+    <template>
+        <div>
+            Tarea Provide
+        </div>
+    </template>
+
+    <script>
+    export default {
+        name: 'App',
+        components: {
+        }
+    }
+    </script>
+    ```
+3. Eliminar archivos:
+    + 13tarea_provide\src\components\HelloWorld.vue
+    + 13tarea_provide\src\assets\logo.png
+4. Agregar CDN's de Bootstrap y font-awesome en **13tarea_provide\public\index.html**:
+    ```html
+    ≡
+    <head>
+        ≡
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    ≡
+    ```
+
+### 158. Componente Formulario (utilizando Provide e inject)
+1. Crear componente **13tarea_provide\src\components\TareaApp.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>App Tareas</h1>
+            <tarea-form />
+            {{ tareas }}
+        </div>
+    </template>
+
+    <script>
+    import { provide, ref } from 'vue'
+    import TareaForm from './TareaForm'
+
+    export default {
+        components: {
+            TareaForm
+        },
+        setup() {
+            const tareas = ref([])
+
+            provide('tareas', tareas)
+
+            return {
+                tareas
+            }
+        }
+    }
+    </script>
+    ```
+2. Crear componente **13tarea_provide\src\components\TareaItem.vue**:
+    ```vue
+    <template>
+        <div>
+            TareaItem
+        </div>
+    </template>
+
+    <script>
+    export default {
+
+    }
+    </script>
+
+    <style>
+
+    </style>
+    ```
+3. Crear componente **13tarea_provide\src\components\TareaForm.vue**:
+    ```vue
+    <template>
+        <div>
+            <form @submit.prevent="agregarTarea">
+                <input type="text" class="form-control my-2" placeholder="Ingrese tarea" v-model.trim="texto">
+                <button class="btn btn-primary w-100">Agregar</button>
+            </form>
+        </div>
+    </template>
+
+    <script>
+    import { inject, ref } from 'vue'
+
+    export default {
+        setup() {
+            const texto = ref('')
+            const tareas = inject('tareas')
+
+            const agregarTarea = () => {
+                if(texto.value === ''){
+                    return console.log('Texto vacio')
+                }
+                
+                const tarea = {
+                    texto: texto.value,
+                    estado: false,
+                    id: Date.now()
+                }
+
+                tareas.value.push(tarea)
+                texto.value = ''
+            }
+
+            return {
+                texto,
+                agregarTarea
+            }
+        }
+    }
+    </script>
+    ```
+4. Modificar componente principal **13tarea_provide\src\App.vue**:
+    ```vue
+    <template>
+        <div class="container mt-3">
+            <tarea-app />
+        </div>
+    </template>
+
+    <script>
+    import TareaApp from './components/TareaApp'
+    export default {
+        name: 'App',
+        components: {
+            TareaApp
+        }
+    }
+    </script>
+    ```
+
+### 159. Componente Pintar Tareas (Props)
+1. Modificar componente **13tarea_provide\src\components\TareaItem.vue**:
+    ```vue
+    <template>
+        <div>
+            <div class="alert alert-warning mt-3 d-flex justify-content-between align-items-center">
+                <p class="m-0">{{ tarea.texto }}</p>
+                <div>
+                    <i class="fas fa-check-circle mx-2 text-success" role="button"></i>
+                    <i class="fas fa-minus-circle text-danger" role="button"></i>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        props: {
+            tarea: {
+                type: Object,
+                required: true
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar componente **13tarea_provide\src\components\TareaApp.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>App Tareas</h1>
+            <tarea-form />
+            <tarea-item 
+                v-for="tarea in tareas"
+                :key="tarea.id"
+                :tarea="tarea"
+            />
+
+            <div class="alert alert-dark mt-5" v-if="!tareas.length">
+                Sin tareas pendientes 🤷‍♀️
+            </div>
+            {{ tareas }}
+        </div>
+    </template>
+    ≡
+    ```
+
+### 160. Eliminar y Editar (utilizando Provide e inject)
+1. Modificar componente **13tarea_provide\src\components\TareaItem.vue**:
+    ```vue
+    <template>
+        <div>
+            <div class="alert alert-warning mt-3 d-flex justify-content-between align-items-center">
+                <p class="m-0" :class="{'tachado': tarea.estado}">{{ tarea.texto }}</p>
+                <div>
+                    <i class="fas fa-undo-alt mx-2 text-success" role="button" @click="modificar(tarea.id)" v-if="tarea.estado"></i>
+                    <i class="fas fa-check-circle mx-2 text-success" role="button" @click="modificar(tarea.id)" v-else></i>
+                    <i class="fas fa-minus-circle text-danger" role="button" @click="eliminar(tarea.id)"></i>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { inject } from 'vue'
+
+    export default {
+        props: {
+            tarea: {
+                type: Object,
+                required: true
+            }
+        },
+        setup() {
+            const tareas = inject('tareas')
+
+            const modificar = id => {
+                tareas.value = tareas.value.map(item => {
+                    if(item.id === id){
+                        item.estado = !item.estado
+                    }
+                    return item
+                })
+            }
+
+            const eliminar = id => {
+                tareas.value = tareas.value.filter(item => item.id !== id)
+            }
+
+            return {
+                modificar,
+                eliminar
+            }
+        }
+    }
+    </script>
+
+    <style scoped>
+    .tachado {
+        text-decoration: line-through;
+    }
+    </style>
+    ```
+
+### 161. watchEffect en Vue 3
+1. Modificar componente **13tarea_provide\src\components\TareaApp.vue**:
+    ```js
+    ≡
+    setup() {
+        const tareas = ref([])
+
+        provide('tareas', tareas)
+
+        if(localStorage.getItem('tareas')){
+            tareas.value = JSON.parse(localStorage.getItem('tareas'))
+        }
+
+        watchEffect(() => {
+            localStorage.setItem('tareas', JSON.stringify(tareas.value))
+        })
+
+        return {
+            tareas
+        }
+    }
+    ≡
+    ```
+
+### 162. Deploy a Hosting Gratuito
+1. Subir el proyecto **13tarea_provide** a Netlify.
+
+### 163. Archivos Terminados de esta sección
++ Código fuente: 00recursos\TodoApp+con+Provide+e+inject+vue+3.zip
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "PROVIDE E INJECT - Trabajando sin VUEX"
++ $ git push -u origin main
+
+
+## Sección 15: VUE 3 - Trucos y Tips
+### 164. Vetur can't find tsconfig.json or jsconfig.json
 
 
 
@@ -4964,60 +5949,6 @@
     ```
 
 
-
-
-### 139. Instalación de Vue 3 + Vuex
-3 min
-### 140. URL API
-1 min
-### 141. Composition API - Actions
-12 min
-### 142. Composition API - State
-3 min
-### 143. Configurar Getters
-4 min
-### 144. Composition API - Getters
-5 min
-### 145. Formatear número
-3 min
-### 146. Pintar Banderas
-2 min
-### 147. Vuex - Filtrar países
-13 min
-### 148. Vuex - Filtrar por región
-6 min
-### 149. KeyUp: Buscador en tiempo real
-4 min
-### 150. Vuex - Buscador
-6 min
-### 151. Optimizar código (aporte estudiante)
-1 min
-### 152. Deploy a Hosting Gratuito
-2 min
-### 153. Archivos Terminados de esta sección
-1 min
-### 154. Instalación del proyecto con Vue 3
-3 min
-### 155. Provide e Inject - Aprendiendo con la práctica
-9 min
-### 156. Presentación del proyecto a realizar
-1 min
-### 157. Bootstrap 5 y FontAwersome 5
-4 min
-### 158. Componente Formulario (utilizando Provide e inject)
-11 min
-### 159. Componente Pintar Tareas (Props)
-8 min
-### 160. Eliminar y Editar (utilizando Provide e inject)
-10 min
-### 161. watchEffect en Vue 3
-7 min
-### 162. Deploy a Hosting Gratuito
-2 min
-### 163. Archivos Terminados de esta sección
-1 min
-### 164. Vetur can't find tsconfig.json or jsconfig.json
-3 min
 ### 165. script setup
 5 min
 ### 166. script setup con props
