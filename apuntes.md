@@ -5938,8 +5938,81 @@
 
 ## Sección 15: VUE 3 - Trucos y Tips
 ### 164. Vetur can't find tsconfig.json or jsconfig.json
++ https://bluuweb.github.io/vue-udemy/23-trucos-vue-3
++ https://vuejs.github.io/vetur/guide/setup.html#project-setup
+1. Para solventar el mensaje de **Vetur can't find jsconfig.json**, crear en la raíz del proyecto un archivo de nombre **jsconfig.json**:
+    ```json
+    {
+        "include": [
+            "./src/**/*"
+        ]
+    }
+    ```
+
+### 165. script setup
++ script setup:
+    + El <script setup> genera automaticamente el return al trabajando con Composition API
+    + Aún script setup NO está 100% estable por ende no se recomienda en producción.
+    + Ejemplo:
+        ```vue
+        <template>
+            <img alt="Vue logo" src="./assets/logo.png">
+            <HelloWorld msg="Welcome to Your Vue.js App"/>
+            <input type="text" v-model="nombre">
+            <p>Hola: {{saludar}}</p>
+        </template>
+
+        <script setup>
+        import { ref, computed } from 'vue'
+        import HelloWorld from './components/HelloWorld.vue'
+
+        const nombre = ref('')
+        const saludar = computed(() => {
+            return !nombre.value.trim() ? 'Invitado' : nombre.value
+        })
+        </script>
+        ```
+
+### 166. script setup con props
++ Ejemplo: 
+    ```vue
+    <script setup>
+        import { defineProps } from "vue";
+
+        const props = defineProps({
+            todo: Object
+        })
+
+    </script>
+    ```
+
+### 167. Reactive vs Ref (parte 1)
++ **Contenido**: sobre Reactive vs Ref.
++ https://bluuweb.github.io/vue-udemy/23-trucos-vue-3/#reactive
+
+### 168. Reactive vs Ref (parte 2)
++ **Contenido**: más sobre Reactive vs Ref.
++ https://bluuweb.github.io/vue-udemy/23-trucos-vue-3/#reactive
+
+### 169. Reactive vs Ref (parte 3)
++ **Contenido**: más sobre Reactive vs Ref.
++ https://bluuweb.github.io/vue-udemy/23-trucos-vue-3/#reactive
+
+### 170. Suspense
++ **Contenido**: sobre Suspense
++ https://bluuweb.github.io/vue-udemy/23-trucos-vue-3/#suspense
+
+### 171. Próximamente...
++ **Contenido**: despedida de la sección.
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "VUE 3 - Trucos y Tips"
++ $ git push -u origin main
 
 
+## Sección 16: VUE 3 + Composition API + Firestone + Auth Google
+### 172. Presentación: VUE 3 + Composition API + Firestore + Auth Google
 
 
 
@@ -5949,22 +6022,7 @@
     ```
 
 
-### 165. script setup
-5 min
-### 166. script setup con props
-1 min
-### 167. Reactive vs Ref (parte 1)
-7 min
-### 168. Reactive vs Ref (parte 2)
-7 min
-### 169. Reactive vs Ref (parte 3)
-4 min
-### 170. Suspense
-8 min
-### 171. Próximamente...
-1 min
-### 172. Presentación: VUE 3 + Composition API + Firestore + Auth Google
-4 min
+
 ### 173. Versión de Firebase (¡Importante!)
 1 min
 ### 174. Instalar y configurar Vue 3 + Firebase
