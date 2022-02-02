@@ -6013,6 +6013,1231 @@
 
 ## Sección 16: VUE 3 + Composition API + Firestone + Auth Google
 ### 172. Presentación: VUE 3 + Composition API + Firestore + Auth Google
++ **Contenido**: sobre la aplicación que desarrollaremos en esta sección.
+
+### 173. Versión de Firebase (¡Importante!)
++ Actualmente salió una nueva versión de Firebase (9.0.0), pero cambiaron la forma de trabajar.
++ Para evitar errores y que todo funcione por favor instalen esta versión:
+    + npm i firebase@8.7.1
++ **Nota**: No les resultará los ejemplos vistos en clases con la versión 9, por ende es muy importante trabajar con la versión 8.
+
+### 174. Instalar y configurar Vue 3 + Firebase
+1. Crear proyecto **14firestore_auth**:
+    + $ vue create 14firestore_auth
+    + Seleccionar: Manually select features
+    + Seleccionar unicamente:
+        + (*) Choose Vue version
+        + (*) Babel
+        + (*) Router
+        + (*) Linter / Formatter
+    + Choose a version of Vue.js that you want to start the project with (Use arrow keys): 3.x
+    + Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n): y
+    + Seleccionar: ESLint with error prevention only
+    + Seleccionar unicamente: 
+        + (*) Lint on save
+    + Seleccionar: In dedicated config files
+    + Save this as a preset for future projects? (y/N): n
+2. Crear proyecto en [Firebase](https://console.firebase.google.com/u/0/):
+    + Nombre del proyecto: firestore-auth
+    + Desactivar Google Analytics
+3. Habilitar la autenticación con Google:
+    + Click en **Authentication**.
+    + Click en **Comenzar**.
+    + En **Proveedores de Accesso > Proveedores adicionales**: Google.
+    + Seleccionar **Habilitar**.
+    + Ingresar un correo electrónico: bazo.pedro@gmail.com
+    + Click en **Guardar**.
+4. Crear base de datos Firestone:
+    + Click en **Firestone Database**.
+    + Click en **Crear base de datos**.
+    + Seleccionar: **Comenzar en modo de prueba**. (Siguiente)
+    + Seleccionar el servidor más cercano. (Habilitar)
+5. Crear colección (tabla):
+    + Click en **Iniciar colección**.
+    + ID de la colección: todos (Siguiente)
+    + Generar ID de documento dando click en **Automático**.
+    + Agrgar campos:
+        + texto: string, valor: todo 1
+        + uid: string, valor: fsaldddkkjj
+        + estado: boolean, valor: false
+        + fecha: timestamp, valor: 01/02/2022
+    + Click en **Guardar**.
+6. Configuración del proyecto:
+    + Ir a **Configuración del proyecto** (En la tuerca).
+    + Seleccionar en **Tus app**: el icono **</>**.
+    + Sobrenombre de la app: firestore-1
+    + Click en **Registrar app**.
+    + Obtener las API Keys:
+        ```js
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "firebase/app";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyAjk9MwESypj7StFC7m5f2A9p0uKABeLTI",
+        authDomain: "firestore-auth-55075.firebaseapp.com",
+        projectId: "firestore-auth-55075",
+        storageBucket: "firestore-auth-55075.appspot.com",
+        messagingSenderId: "649212089254",
+        appId: "1:649212089254:web:341b45be81ab49415f7567"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        ```
+    + mmm
+7. Regresar a la consola del proyecto **14firestore_auth** en local e instalar firebase y bootstrap:
+    + $ npm i firebase@8.7.1
+    + $ npm i @vueuse/firebase
+        + **Nota**: por problemas en la ejecución terminé instalando la versión "@vueuse/firebase": "^4.9.0".
+    + $ npm install bootstrap
+8. Modificar **14firestore_auth\src\main.js**:
+    ```js
+    ≡
+    import 'bootstrap/dist/css/bootstrap.min.css'
+
+    createApp(App).use(router).mount('#app')
+    ```
+9. Modificar vista **14firestore_auth\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <h1 class="text-primary">Hola Vue</h1>
+            ≡
+        </div>
+    </template>
+    ≡
+    ```
+10. Crear archivo **jsconfig.json**:
+    ```json
+    {
+        "include": [
+            "./src/**/*"
+        ]
+    }
+    ```
+
+### 175. Configurar Rutas y limpiar proyecto
+1. Modificar vista **14firestore_auth\src\views\Home.vue**:
+    ```vue
+    <template>
+        <div class="home">
+            <h1>Home</h1>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        name: 'Home',
+        components: {
+        }
+    }
+    </script>
+    ```
+2. Eliminar archivos:
+    + 14firestore_auth\src\components\HelloWorld.vue
+    + 14firestore_auth\src\views\About.vue
+    + 14firestore_auth\src\assets\logo.png
+3. Crear vista **14firestore_auth\src\views\Perfil.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>Perfil</h1>
+        </div>
+    </template>
+    ```
+4. Crear vista **14firestore_auth\src\views\Crud.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>CRUD</h1>
+        </div>
+    </template>
+    ```
+5. Modificar archivo de rutas **14firestore_auth\src\router\index.js**:
+    ```js
+    import { createRouter, createWebHistory } from 'vue-router'
+
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
+        },
+        {
+            path: '/perfil',
+            name: 'Perfil',
+            component: () => import(/* webpackChunkName: "perfil" */ '../views/Perfil.vue')
+        },
+        {
+            path: '/crud',
+            name: 'Crud',
+            component: () => import(/* webpackChunkName: "crud" */ '../views/Crud.vue')
+        }
+    ]
+
+    const router = createRouter({
+        history: createWebHistory(process.env.BASE_URL),
+        routes
+    })
+
+    export default router
+    ```
+6. Modificar componente principal **14firestore_auth\src\App.vue**:
+    ```vue
+    <template>
+        <div class="container">
+            <router-view/>
+        </div>
+    </template>
+    ```
+
+### 176. Configurar Auth y Firestore en Vue 3
+1. Crear archivo **14firestore_auth\src\firebase.js**:
+    ```js
+    import firebase from 'firebase/app'
+    import 'firebase/firestore'
+    import 'firebase/auth'
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAjk9MwESypj7StFC7m5f2A9p0uKABeLTI",
+        authDomain: "firestore-auth-55075.firebaseapp.com",
+        projectId: "firestore-auth-55075",
+        storageBucket: "firestore-auth-55075.appspot.com",
+        messagingSenderId: "649212089254",
+        appId: "1:649212089254:web:341b45be81ab49415f7567"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    const db = firebase.firestore()
+    const auth = firebase.auth()
+    const marcaTiempo = firebase.firestore.FieldValue.serverTimestamp
+
+    export { db, auth, marcaTiempo, firebase }
+    ```
+
+### 177. Componente Navbar
+1. Crear componente **14firestore_auth\src\components\Navbar.vue**:
+    ```vue
+    <template>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                <router-link class="navbar-brand" to="/">
+                    Firestore
+                </router-link>
+                <div>
+                    <button class="btn btn-primary">Acceder</button>
+                    <button class="btn btn-danger">Salir</button>
+                </div>
+            </div>
+        </nav>
+    </template>
+    ```
+2. Modificar componente principal **14firestore_auth\src\App.vue**:
+    ```vue
+    <template>
+        <div>
+            <Navbar />
+            <div class="container">
+                <router-view/>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import Navbar from '@/components/Navbar'
+    export default {
+        components: {
+            Navbar
+        },
+        setup() {
+            
+        }
+    }
+    </script>
+    ```
+
+### 178. Iniciar sesión con Google
+1. Crear composable **14firestore_auth\src\composables\useUser.js**:
+    ```js
+    import {auth, firebase} from '../firebase'
+    import {useRouter} from 'vue-router'
+
+    export const useUser = () => {
+
+        const router = useRouter()
+        
+        const signIn = async () => {
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider()
+                await auth.signInWithPopup(provider)
+                router.push('/perfil')
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        const signOut = async () => {
+            try {
+                await auth.signOut()
+                router.push('/')
+            } catch (error) {
+                console.log(error)
+            } 
+        }
+
+        return {signIn, signOut}
+    }
+    ```
+2. Modificar componente **14firestore_auth\src\components\Navbar.vue**:
+    ```vue
+    <template>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                <router-link class="navbar-brand" to="/">
+                    Firestore
+                </router-link>
+                <div>
+                    <button class="btn btn-primary" @click="signIn">Acceder</button>
+                    <button class="btn btn-danger" @click="signOut">Salir</button>
+                </div>
+            </div>
+        </nav>
+    </template>
+
+    <script>
+    import { useUser } from '../composables/useUser'
+
+    export default {
+        setup() {
+            const { signIn, signOut } = useUser()
+
+            return {
+                signIn,
+                signOut
+            }
+        }
+    }
+    </script>
+    ```
+
+### 179. Importante - Leer
++ **Nota**: en los siguientes videos utilizaremos useAuth pero esto se actualizó hace unos días: https://vueuse.org/firebase/useAuth/
+    + Para seguir el curso sin problemas por favor instalar la versión 4.11:
+        + $ npm i @vueuse/firebase@4.11.1
+    + https://www.npmjs.com/package/@vueuse/firebase/v/4.11.1
+    + En caso contrario tendrán que ajustar su código según la documentación oficial:  https://vueuse.org/firebase/useAuth/
+
+### 180. Composable useFirebase
+1. Modificar componente **14firestore_auth\src\components\Navbar.vue**:
+    ```vue
+    <template>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                <router-link class="navbar-brand" to="/">
+                    {{ userName }}
+                </router-link>
+                <div>
+                    <button class="btn btn-primary" @click="signIn" v-if="!isAuthenticated">Acceder</button>
+                    <button class="btn btn-danger" @click="signOut" v-else>Salir</button>
+                </div>
+            </div>
+        </nav>
+    </template>
+
+    <script>
+    import { useUser } from '../composables/useUser'
+    import { useAuth } from '@vueuse/firebase'
+    import { computed } from 'vue'
+
+    export default {
+        setup() {
+            const { signIn, signOut } = useUser()
+            const {user, isAuthenticated} = useAuth()
+
+            const userName = computed(() => {
+                return isAuthenticated.value ? user.value.displayName : 'sin Auth'
+            })
+
+            return {
+                signIn,
+                signOut,
+                user, 
+                isAuthenticated,
+                userName
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **14firestore_auth\src\views\Perfil.vue**:
+    ```vue
+    <template>
+        <div v-if="isAuthenticated">
+            <h1>Perfil</h1>
+            <pre>
+                {{ user }}
+            </pre>
+        </div>
+    </template>
+
+    <script>
+    import { useAuth } from '@vueuse/firebase'
+
+    export default {
+        setup() {
+            const {user, isAuthenticated} = useAuth()
+
+            return {
+                user, 
+                isAuthenticated
+            }
+        }
+    }
+    </script>
+    ```
+
+### 181. Configurar rutas protegidas con Firebase
+1. Modificar archivo de rutas **14firestore_auth\src\router\index.js**:
+    ```js
+    import { createRouter, createWebHistory } from 'vue-router'
+    import { firebase } from '../firebase'
+
+    const routes = [
+        {
+            path: '/',
+            name: 'Home',
+            component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
+        },
+        {
+            path: '/perfil',
+            name: 'Perfil',
+            component: () => import(/* webpackChunkName: "perfil" */ '../views/Perfil.vue'),
+            mata: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/crud',
+            name: 'Crud',
+            component: () => import(/* webpackChunkName: "crud" */ '../views/Crud.vue'),
+            mata: {
+                requiresAuth: true
+            }
+        }
+    ]
+
+    const router = createRouter({
+        history: createWebHistory(process.env.BASE_URL),
+        routes
+    })
+
+    router.beforeEach(async(to, from, next) => {
+        const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+        if(requiresAuth && !(await firebase.getCurrentUser())) {
+            next('/')
+        } else {
+            next()
+        }
+    })
+
+    export default router
+    ```
+2. Modificar **14firestore_auth\src\firebase.js**:
+    ```js
+    ≡
+    firebase.getCurrentUser = () => {
+        return new Promise((resolve, reject) => {
+            const unsuscribe = firebase.auth().onAuthStateChanged(user => {
+                unsuscribe()
+                resolve(user)
+            }, reject)
+        })
+    }
+
+    export { db, auth, marcaTiempo, firebase }
+    ```
+
+### 182. Loading para nuestra aplicación web
+1. Crear componente **14firestore_auth\src\components\Cargando.vue**:
+    ```vue
+    <template>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </template>
+    ```
+2. Modificar componente principal **14firestore_auth\src\App.vue**:
+    ```vue
+    <template>
+        <div>
+            <Cargando v-if="loading" class="mt-5" />
+            <div v-else>
+                <Navbar />
+                <div class="container">
+                    <router-view/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import Navbar from '@/components/Navbar'
+    import Cargando from '@/components/Cargando'
+    import { firebase } from '@/firebase'
+    import { onMounted, ref } from 'vue'
+
+    export default {
+        components: {
+            Navbar,
+            Cargando
+        },
+        setup() {
+            const loading = ref(false)
+
+            onMounted(async() => {
+                loading.value = true
+                await firebase.getCurrentUser()
+                loading.value = false
+            })
+
+            return {
+                loading
+            }
+        }
+    }
+    </script>
+    ```
+
+### 183. Vista CRUD
+1. Modificar componente **14firestore_auth\src\components\Navbar.vue**:
+    ```vue
+    <template>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                <router-link class="navbar-brand" to="/">
+                    {{ userName }}
+                </router-link>
+                <div>
+                    <button class="btn btn-primary" @click="signIn" v-if="!isAuthenticated">Acceder</button>
+                    <div v-else>
+                        <router-link to="/crud" class="btn btn-primary mx-1">
+                            CRUD
+                        </router-link>
+                        <router-link to="/perfil" class="btn btn-primary mx-1">
+                            Perfil
+                        </router-link>
+                        <button class="btn btn-danger mx-1" @click="signOut">Salir</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </template>
+    ≡
+    ```
+2. Modificar vista **14firestore_auth\src\views\Crud.vue**:
+    ```vue
+    <template>
+        <div v-if="isAuthenticated">
+            <h1>CRUD</h1>
+        </div>
+    </template>
+
+    <script>
+    import { useAuth } from '@vueuse/firebase'
+
+    export default {
+        setup() {
+            const { isAuthenticated } = useAuth()
+
+            return {
+                isAuthenticated
+            }
+        }
+    }
+    </script>
+    ```
+
+### 184. Obtener Documentos de Firestore
+1. Crear composable **14firestore_auth\src\composables\useDb.js**:
+    ```js
+    import { ref } from 'vue'
+    import { db } from '../firebase'
+
+    export const useDb = () => {
+        const referencia = db.collection('todos')
+        const cargando = ref(false)
+
+        const getTodos = async() => {
+            try {
+                cargando.value = true
+                const res = await referencia.get()
+                return res.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+            } catch (error) {
+                return {
+                    error,
+                    res: true
+                }
+            } finally {
+                cargando.value = false
+            }
+        }
+
+        return {
+            getTodos,
+            cargando
+        }
+    }
+    ```
+2. Modificar vista **14firestore_auth\src\views\Crud.vue**:
+    ```vue
+    <template>
+        <div v-if="isAuthenticated">
+            <h1>CRUD</h1>
+            <Cargando v-if="cargando" />
+            <div v-else>
+                <pre>{{ todos }}</pre>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { useAuth } from '@vueuse/firebase'
+    import { useDb } from '../composables/useDb'
+    import Cargando from '../components/Cargando.vue'
+    import { onMounted, ref } from 'vue'
+
+    export default {
+        components: {
+            Cargando
+        },
+        setup() {
+            const { isAuthenticated } = useAuth()
+            const { getTodos, cargando} = useDb()
+            const todos = ref([])
+
+            onMounted(async() => {
+                todos.value = await getTodos()
+                if(todos.value.res){
+                    console.log(todos.value.error)
+                }
+            })
+
+            return {
+                isAuthenticated,
+                todos,
+                cargando
+            }
+        }
+    }
+    </script>
+    ```
+
+### 185. Pintar componente Error
+1. Crear componente **14firestore_auth\src\components\Error.vue**:
+    ```vue
+    <template>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Ocurrio un error: </strong> {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="error = null"></button>
+        </div>
+    </template>
+
+    <script>
+    import { inject } from 'vue'
+    export default {
+        setup() {
+            const error = inject('error')
+
+            return {
+                error
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **14firestore_auth\src\views\Crud.vue**:
+    ```vue
+    <template>
+        <div v-if="isAuthenticated">
+            <h1>CRUD</h1>
+            <Cargando v-if="cargando" />
+            <div v-else>
+                <Error v-if="pintarError"/>
+                <pre>{{ todos }}</pre>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { useAuth } from '@vueuse/firebase'
+    import { useDb } from '../composables/useDb'
+    import Cargando from '../components/Cargando'
+    import Error from '../components/Error'
+    import { computed, onMounted, provide, ref } from 'vue'
+
+    export default {
+        components: {
+            Cargando,
+            Error
+        },
+        setup() {
+            const { isAuthenticated } = useAuth()
+            const { getTodos, cargando} = useDb()
+            const todos = ref([])
+            const error = ref(null)
+
+            provide('error', error)
+
+            const pintarError = computed(() => error.value ? true : false)
+
+            onMounted(async() => {
+                todos.value = await getTodos()
+                if(todos.value.res){
+                    console.log(todos.value.error)
+                    error.value =todos.value.error
+                }
+            })
+
+            return {
+                isAuthenticated,
+                todos,
+                cargando,
+                pintarError
+            }
+        }
+    }
+    </script>
+    ```
+
+### 186. Agregar documentos a Firestore
+1. Modificara composable **14firestore_auth\src\composables\useDb.js**:
+    ```js
+    import { ref } from 'vue'
+    import { db, marcaTiempo } from '../firebase'
+    import { useAuth } from '@vueuse/firebase'
+
+    export const useDb = () => {
+        const referencia = db.collection('todos')
+        const cargando = ref(false)
+        const { user } = useAuth()
+
+        const getTodos = async() => {
+            try {
+                cargando.value = true
+                const res = await referencia.get()
+                return res.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+            } catch (error) {
+                return {
+                    error,
+                    res: true
+                }
+            } finally {
+                cargando.value = false
+            }
+        }
+
+        const agregarTodo = async(texto) => {
+            try {
+                const todo = {
+                    texto: texto,
+                    fecha: marcaTiempo(),
+                    estado: false,
+                    uid: user.value.uid
+                }
+
+                const res = await referencia.add(todo)
+
+                return {
+                    id: res.id,
+                    ...todo
+                }
+            } catch (error) {
+                return {
+                    error,
+                    res: true
+                }
+            }
+        }
+
+        return {
+            getTodos,
+            cargando,
+            agregarTodo
+        }
+    }
+    ```
+2. Crear componente **14firestore_auth\src\components\TodoForm.vue**:
+    ```vue
+    <template>
+        <form @submit.prevent="procesarFormulario">
+            <input type="text" placeholder="Enter para agregar todo" class="form-control my-3" v-model.trim="texto">
+        </form>
+    </template>
+
+    <script>
+    import { inject, ref } from 'vue'
+    import { useDb } from '@/composables/useDb'
+
+    export default {
+        setup() {
+            const { agregarTodo } = useDb()
+            const texto = ref('')
+            const todos = inject('todos')
+            const error = inject('error')
+
+            const procesarFormulario = async() => {
+                if(!texto.value.trim()){
+                    console.log('texto vacio')
+                    return
+                }
+
+                const todo = await agregarTodo(texto.value)
+
+                if(todo.res){
+                    error.value = todo.error
+                    texto.value = ''
+                    return
+                }
+
+                todos.value = [...todos.value, todo]
+                texto.value = ''
+            }
+
+            return {
+                texto,
+                procesarFormulario
+            }
+        }
+    }
+    </script>
+    ```
+3. Modificar componente **114firestore_auth\src\views\Crud.vue**:
+    ```vue
+    <template>
+        <div v-if="isAuthenticated">
+            <h1>CRUD</h1>
+            <Cargando v-if="cargando" />
+            <div v-else>
+                <Error v-if="pintarError"/>
+                <TodoForm />
+                <pre>{{ todos }}</pre>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { useAuth } from '@vueuse/firebase'
+    import { useDb } from '../composables/useDb'
+    import Cargando from '../components/Cargando'
+    import Error from '../components/Error'
+    import TodoForm from '../components/TodoForm'
+    import { computed, onMounted, provide, ref } from 'vue'
+
+    export default {
+        components: {
+            Cargando,
+            Error,
+            TodoForm
+        },
+        setup() {
+            const { isAuthenticated } = useAuth()
+            const { getTodos, cargando} = useDb()
+            const todos = ref([])
+            const error = ref(null)
+
+            provide('error', error)
+            provide('todos', todos)
+
+            const pintarError = computed(() => error.value ? true : false)
+
+            onMounted(async() => {
+                todos.value = await getTodos()
+                if(todos.value.res){
+                    console.log(todos.value.error)
+                    error.value =todos.value.error
+                }
+            })
+
+            return {
+                isAuthenticated,
+                todos,
+                cargando,
+                pintarError
+            }
+        }
+    }
+    </script>
+    ```
+
+### 187. Pintar Todo a través de un PROPS
+1. Crear componente **14firestore_auth\src\components\Todo.vue**:
+    ```vue
+    <template>
+        <div>
+            <div class="card shadow-sm mb-2">
+                <div class="card-body">
+                    <p class="m-0">
+                        {{ todo.texto }}
+                    </p>
+                    <div class="mt-2">
+                        <button class="btn btn-warning me-1">Finalizar</button>
+                        <button class="btn btn-danger">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        props: { 
+            todo: Object
+        },
+        setup() {
+
+        }
+    }
+    </script>
+    ```
+2. Modificar vista **14firestore_auth\src\views\Crud.vue**:
+    ```vue
+    <template>
+        <div v-if="isAuthenticated">
+            <h1>CRUD</h1>
+            <Cargando v-if="cargando" />
+            <div v-else>
+                <Error v-if="pintarError"/>
+                <TodoForm />
+                <Todo v-for="todo in todos" :key="todo.id" :todo="todo" />
+            </div>
+        </div>
+    </template>
+
+    <script>
+    ≡
+    import Todo from '../components/Todo'
+    import { computed, onMounted, provide, ref } from 'vue'
+
+    export default {
+        components: {
+            ≡
+            Todo
+        },
+        ≡
+    }
+    </script>
+    ```
+
+### 188. Eliminar documento de Firestore
+1. Modificar componente **14firestore_auth\src\components\Todo.vue**:
+    ```vue
+    <template>
+        <div>
+            <div class="card shadow-sm mb-2">
+                <div class="card-body">
+                    <p class="m-0">
+                        {{ todo.texto }}
+                    </p>
+                    <div class="mt-2">
+                        <button class="btn btn-warning me-1">Finalizar</button>
+                        <button class="btn btn-danger" @click="eliminar(todo.id)" :disabled="bloquear">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { inject, ref } from 'vue'
+    import { useDb } from '@/composables/useDb'
+
+    export default {
+        props: { 
+            todo: Object
+        },
+        setup() {
+            const { eliminarTodo } = useDb()
+            const error = inject('error')
+            const todos = inject('todos')
+            const bloquear = ref(false)
+
+            const eliminar = async(id) => {
+                bloquear.value = true
+                const respuesta = await eliminarTodo(id)
+
+                if(respuesta.res){
+                    error.value = respuesta.error
+                    bloquear.value = false
+                    return
+                }
+
+                todos.value = todos.value.filter(item => item.id !== id)
+                bloquear.value = false
+            }
+
+            return {
+                eliminar,
+                bloquear
+            }
+        }
+    }
+    </script>
+    ```
+2. Modificar composable **14firestore_auth\src\composables\useDb.js**:
+    ```js
+    ≡
+    const eliminarTodo = async(id) => {
+        try {
+            await referencia.doc(id).delete()
+            return {
+                res: false
+            }
+        } catch (error) {
+            return {
+                error,
+                res: true
+            }
+        }
+    }
+
+    return {
+        ≡
+        eliminarTodo
+    }
+    ≡
+    ```
+
+### 189. Modificar documento de Firestore
+1. Modificar composable **14firestore_auth\src\composables\useDb.js**:
+    ```js
+    ≡
+    const modificarTodo = async(todo) => {
+        try {
+            await referencia.doc(todo.id).update({
+                estado: !todo.estado
+            })
+            return {
+                res: false
+            }
+        } catch (error) {
+            return {
+                error,
+                res: true
+            }
+        }
+    }
+
+    return {
+        ≡
+        modificarTodo
+    }
+    ≡
+    ```
+2. Modificar componente **14firestore_auth\src\components\Todo.vue**:
+    ```vue
+    <template>
+        <div>
+            <div class="card shadow-sm mb-2">
+                <div class="card-body">
+                    <p class="m-0" :class="{'text-decoration-line-through': todo.estado }">
+                        {{ todo.texto }}
+                    </p>
+                    <div class="mt-2">
+                        <button 
+                            class="btn me-1" 
+                            :class="todo.estado ? 'btn-success' : 'btn-warning'"
+                            @click="modificar(todo)" 
+                            :disabled="bloquear" 
+                        >
+                            {{ todo.estado ? 'Pendiente' : 'Finalizar' }}
+                        </button>
+                        <button class="btn btn-danger" @click="eliminar(todo.id)" :disabled="bloquear">Eliminar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    import { inject, ref } from 'vue'
+    import { useDb } from '@/composables/useDb'
+
+    export default {
+        props: { 
+            todo: Object
+        },
+        setup() {
+            const { eliminarTodo, modificarTodo } = useDb()
+            const error = inject('error')
+            const todos = inject('todos')
+            const bloquear = ref(false)
+
+            const eliminar = async(id) => {
+                bloquear.value = true
+                const respuesta = await eliminarTodo(id)
+
+                if(respuesta.res){
+                    error.value = respuesta.error
+                    bloquear.value = false
+                    return
+                }
+
+                todos.value = todos.value.filter(item => item.id !== id)
+                bloquear.value = false
+            }
+
+            const modificar = async(todo) => {
+                bloquear.value = true
+                const respuesta = await modificarTodo(todo)
+
+                if(respuesta.res){
+                    error.value = respuesta.error
+                    bloquear.value = false
+                    return
+                }
+
+                todos.value = todos.value.map(item => (
+                    item.id === todo.id ? {...item, estado: !todo.estado} : item
+                ))
+                bloquear.value = false
+            }
+
+            
+
+            return {
+                eliminar,
+                modificar,
+                bloquear
+            }
+        }
+    }
+    </script>
+    ```
+3. Modificar vista **14firestore_auth\src\views\Crud.vue**:
+    ```vue
+    <template>
+        <div v-if="isAuthenticated">
+            <h1>CRUD</h1>
+            <Cargando v-if="cargando" />
+            <div v-else>
+                <Error v-if="pintarError"/>
+                <TodoForm />
+                <Todo v-for="todo in todos" :key="todo.id" :todo="todo" />
+                <p v-if="!todos.length">
+                    Sin Todos
+                </p>
+            </div>
+        </div>
+    </template>
+    ≡
+    ```
+
+### 190. Reglas de seguridad Firestore
+1. Ir a al proyecto **firestore-auth** en la página de Firebase.
+2. Ir a **Firestore Database > Reglas**
+3. Modificar reglas:
+    ```js
+    rules_version = '2';
+    service cloud.firestore {
+        match /databases/{database}/documents {
+            match /todos/{document} {
+                allow read, update, delete: if 
+                    request.auth != null && request.auth.uid == resource.data.uid;
+                allow create: if 
+                    request.auth != null;
+            }
+        }
+    }
+    ```
+    + Reglas originales:
+        ```js
+        rules_version = '2';
+        service cloud.firestore {
+            match /databases/{database}/documents {
+                match /{document=**} {
+                    allow read, write: if
+                        request.time < timestamp.date(2022, 3, 3);
+                }
+            }
+        }
+        ```
+  
+4. En el proyecto **14firestore_auth** en local, modificar composable **14firestore_auth\src\composables\useDb.js**:
+    ```js
+    const getTodos = async() => {
+        try {
+            cargando.value = true
+            const res = await referencia
+                .where('uid', '==', user.value.uid)
+                .get()
+            return res.docs.map(doc => ({
+                ≡
+            }))
+        } catch (error) {
+            ≡
+        } finally {
+            ≡
+        }
+    }
+    ```
+
+### 191. Deploy a Hosting Firebase
+1. Compilar el proyecto para produccón:
+    + $ npm run build
+2. Ir a al proyecto **firestore-auth** en la página de Firebase.
+3. Ir a **Hosting** y dar click en **Comenzar**.
+4. En la máquina local ejecutar en alguna terminal como administrador:
+    + $ npm install -g firebase-tools
+6. En la página del proyecto, dar click en **Siguiente**.
+7. En local ejecutar:
+    + $ firebase login
+    + $ firebase init
+        + Are you ready to proceed? (Y/n): y
+        + Seleccionar:
+            + (*) Firestore: Configure security rules and indexes files for Firestore
+            + (*) Hosting: Configure files for Firebase Hosting and (optionally) set up GitHub Action deploys
+            + (*) Hosting: Set up GitHub Action deploys
+        + Seleccionar: Use an existing project
+        + Select a default Firebase project for this directory: (Use arrow keys): firestore-auth-55075 (firestore-auth)
+        + What file should be used for Firestore Rules? (firestore.rules): y
+        + What file should be used for Firestore indexes? (firestore.indexes.json): y
+        + File y already exists. Do you want to overwrite it with the Firestore Indexes from the Firebase Console? (y/N): n
+        + What do you want to use as your public directory? (public): dist
+        + Configure as a single-page app (rewrite all urls to /index.html)? (y/N): y
+        + Set up automatic builds and deploys with GitHub? (y/N): n
+        + File dist/index.html already exists. Overwrite? (y/N): n
+8. En la página del proyecto, dar click en **Siguiente**.
+9. En local ejecutar:
+    + $ firebase deploy
+
+### 192. Archivos Terminados de esta sección
++ Código fuente: **00recursos\Vue+3+Auth+++Firestore+2021.zip**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "VUE 3 + Composition API + Firestone + Auth Google"
++ $ git push -u origin main
+
+
+## Sección 17: Preguntas, respuestas y soluciones de estudiantes
+### 193. Introducción
+
+
 
 
 
@@ -6023,48 +7248,7 @@
 
 
 
-### 173. Versión de Firebase (¡Importante!)
-1 min
-### 174. Instalar y configurar Vue 3 + Firebase
-9 min
-175. Configurar Rutas y limpiar proyecto
-2 min
-### 176. Configurar Auth y Firestore en Vue 3
-5 min
-### 177. Componente Navbar
-2 min
-### 178. Iniciar sesión con Google
-8 min
-### 179. Importante - Leer
-1 min
-### 180. Composable useFirebase
-8 min
-### 181. Configurar rutas protegidas con Firebase
-8 min
-### 182. Loading para nuestra aplicación web
-6 min
-### 183. Vista CRUD
-3 min
-### 184. Obtener Documentos de Firestore
-11 min
-### 185. Pintar componente Error
-5 min
-### 186. Agregar documentos a Firestore
-10 min
-### 187. Pintar Todo a través de un PROPS
-3 min
-### 188. Eliminar documento de Firestore
-6 min
-### 189. Modificar documento de Firestore
-7 min
-### 190. Reglas de seguridad Firestore
-6 min
-### 191. Deploy a Hosting Firebase
-5 min
-### 192. Archivos Terminados de esta sección
-1 min
-### 193. Introducción
-1 min
+
 ### 194. The popup has been closed by the user before finalizing the operation
 1 min
 ### 195. Actualizaciones y nuevas secciones 2021
