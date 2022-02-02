@@ -7236,7 +7236,20 @@
 
 ## Sección 17: Preguntas, respuestas y soluciones de estudiantes
 ### 193. Introducción
++ **Contenido**: sobre preguntas y respuestas del curso.
 
+### 194. The popup has been closed by the user before finalizing the operation
++ Algunos al probar su aplicación en celulares no les abre el popup de inicio de sesión de Google, aquí un foro de ayuda:
+    + https://github.com/firebase/firebase-js-sdk/issues/3188
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Preguntas, respuestas y soluciones de estudiantes"
++ $ git push -u origin main
+
+
+## Sección 18: Próximas secciones con Vue 3
+### 195. Actualizaciones y nuevas secciones 2021
 
 
 
@@ -7249,10 +7262,6 @@
 
 
 
-### 194. The popup has been closed by the user before finalizing the operation
-1 min
-### 195. Actualizaciones y nuevas secciones 2021
-1 min
 ### 196. ¡Importante! ¿Vue versión 2 o 3?
 6 min
 ### 197. Vista previa del proyecto
