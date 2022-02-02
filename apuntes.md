@@ -7250,7 +7250,16 @@
 
 ## Sección 18: Próximas secciones con Vue 3
 ### 195. Actualizaciones y nuevas secciones 2021
++ **Contenido**: notas sobre el curso.
 
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "Próximas secciones con Vue 3"
++ $ git push -u origin main
+
+
+## Sección 19: (Vue.js 2) Firebase - CRUD con Vue Router y Vuex
+### 196. ¡Importante! ¿Vue versión 2 o 3?
 
 
 
@@ -7259,11 +7268,6 @@
     ```vue
     ```
 
-
-
-
-### 196. ¡Importante! ¿Vue versión 2 o 3?
-6 min
 ### 197. Vista previa del proyecto
 1 min
 ### 198. Archivos terminados de esta sección
