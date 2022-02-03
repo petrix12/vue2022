@@ -7260,6 +7260,223 @@
 
 ## Sección 19: (Vue.js 2) Firebase - CRUD con Vue Router y Vuex
 ### 196. ¡Importante! ¿Vue versión 2 o 3?
++ **Contenido**: breve comparación entre Vue 2 y Vue 3.
+
+### 197. Vista previa del proyecto
++ **Contenido**: sobre la aplicación a desarrollar.
+
+### 198. Archivos terminados de esta sección
++ Código fuente del proyecto: 00recursos\CRUD-Firebase-Udemy.zip
+
+### 199. Vue Cli 4 y Primeros pasos con Firebase
++ https://console.firebase.google.com/u/0
++ https://bluuweb.github.io/vue-udemy
+1. Crear proyecto **15crud_vue**:
+    + $ vue create 15crud_vue
+    + Seleccionar: Manually select features
+    + Seleccionar:
+        + (*) Choose Vue version
+        + (*) Babel
+        + (*) Router
+        + (*) Vuex
+    + Choose a version of Vue.js that you want to start the project with (Use arrow keys): 2.x
+    + Use history mode for router? (Requires proper server setup for index fallback in production) (Y/n): y
+    + Seleccionar: In dedicated config files
+    + Save this as a preset for future projects? (y/N): n
+2. Instalar Firebase:
+    + $ npm i firebase
+3. Modificar componente principal **15crud_vue\src\App.vue**:
+    ```vue
+    <template>
+        <div id="app">
+            <img alt="Vue logo" src="./assets/logo.png">
+            <router-view/>
+        </div>
+    </template>    
+    ```
+4. Modificar el archivo de rutas **15crud_vue\src\router\index.js**:
+    ```js
+    import Vue from 'vue'
+    import VueRouter from 'vue-router'
+
+    Vue.use(VueRouter)
+
+    const routes = [
+    {
+        path: '/',
+        name: 'Inicio',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Inicio.vue')
+    }
+    ]
+
+    const router = new VueRouter({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes
+    })
+
+    export default router
+    ```
+5. Crear vista **15crud_vue\src\views\Inicio.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>Inicio</h1>
+        </div>
+    </template>
+
+    <script>
+    export default {
+        name: "Inicio"
+    }
+    </script>
+    ```
+6. Crear proyecto en [Firebase](https://console.firebase.google.com/u/0/)
+    + Nombre del proyecto: **crud-vue**.
+    + Desahabilitar Google Analytics.
+    + En la consola del proyecto dar click en **</>**
+    + Subnombre de la app: **crud-vue**.
+    + Obtener la API Keys:
+        ```js
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "firebase/app";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDy_2iaZT7P5BQTtBODhSnkEG9JPgGA7GI",
+            authDomain: "crud-vue-e6e70.firebaseapp.com",
+            projectId: "crud-vue-e6e70",
+            storageBucket: "crud-vue-e6e70.appspot.com",
+            messagingSenderId: "827784103038",
+            appId: "1:827784103038:web:e0be8417e861d78857042f"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        ```
+
+### 200. Versión de Firebase (¡Importante!)
++ **Nota**: Actualmente salió una nueva versión de Firebase (9.0.0), pero cambiaron la forma de trabajar.
+    + Para evitar errores y que todo funcione por favor instalen esta versión:
+        + npm i firebase@8.7.1
+
+### 201. Configurar Firebase en Vue.js
+1. Crear archivo **15crud_vue\src\firebase.js**:
+    ```js
+    import firebase from 'firebase/app'
+    import 'firebase/firestore'
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDy_2iaZT7P5BQTtBODhSnkEG9JPgGA7GI",
+        authDomain: "crud-vue-e6e70.firebaseapp.com",
+        projectId: "crud-vue-e6e70",
+        storageBucket: "crud-vue-e6e70.appspot.com",
+        messagingSenderId: "827784103038",
+        appId: "1:827784103038:web:e0be8417e861d78857042f"
+    };
+
+    // Initialize Firebase
+    //const app = initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig)
+
+    const db = firebase.firestore
+
+    export {db}
+    ```
+
+### 202. Obtener Documentos de Firestore
+1. Ir a **Firestore Database** en la consola del proyecto en la página de Firebase.
+2. Click en **Crear base de datos**.
+3. Seleccionar **Comenzar en modo de prueba** y **Siguiente**.
+4. Seleccionar el servidor más cercano y **Habilitar**.
+5. Crear colección **tareas**.
+6. Crear los siguientes documentos:
+    + Generar los **ID de documento** de manera automática:
+        + nombre (string), valor: Tarea 1
+        + nombre (string), valor: Tarea 2
+7. Regresar a la terminal en local y modificar la tienda **15crud_vue\src\store\index.js**:
+    ```js
+    import Vue from 'vue'
+    import Vuex from 'vuex'
+    import { db } from '../firebase'
+
+    Vue.use(Vuex)
+
+    export default new Vuex.Store({
+        state: {
+        },
+        mutations: {
+        },
+        actions: {
+            getTareas({ commit}){
+                db.collection('tareas').get()
+                    .then(res => {
+                        res.forEach(doc => {
+                            console.log(doc.id)
+                            console.log(doc.data())
+                        })
+                    })
+            }
+        },
+        modules: {
+        }
+    })
+    ```
+8. Modificar vista **15crud_vue\src\views\Inicio.vue**:
+    ```vue
+    <template>
+        <div>
+            <h1>Inicio</h1>
+        </div>
+    </template>
+
+    <script>
+    import { mapActions } from 'vuex'
+
+    export default {
+        name: "Inicio",
+        created(){
+            this.getTareas()
+        },
+        methods: {
+            ...mapActions(['getTareas'])
+        }
+    }
+    </script>
+    ```
++ **VIDEO DESACTUALIZADO**
+
+### 203. Listar documentos en Vue.js
++ **VIDEO DESACTUALIZADO**
+
+### 204. Editar documentos Firestore
++ **VIDEO DESACTUALIZADO**
+
+### 205. Formulario para editar documentos
++ **VIDEO DESACTUALIZADO**
+
+### 206. Agregar documentos a Firestore
++ **VIDEO DESACTUALIZADO**
+
+### 207. Eliminar documento de Firestore
++ **VIDEO DESACTUALIZADO**
+
+### 208. Finalizando proyecto agregando Bootstrap 4
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) Firebase - CRUD con Vue Router y Vuex"
++ $ git push -u origin main
+
+
+## Sección 20: (Vue.js 2) Bootstrap 4 - Mejorando apariencia
+### 209. Presentación del proyecto AUTH (Login y Registro)
+
+
+
 
 
 
@@ -7268,32 +7485,6 @@
     ```vue
     ```
 
-### 197. Vista previa del proyecto
-1 min
-### 198. Archivos terminados de esta sección
-1 min
-### 199. Vue Cli 4 y Primeros pasos con Firebase
-8 min
-### 200. Versión de Firebase (¡Importante!)
-1 min
-### 201. Configurar Firebase en Vue.js
-5 min
-### 202. Obtener Documentos de Firestore
-10 min
-### 203. Listar documentos en Vue.js
-6 min
-### 204. Editar documentos Firestore
-10 min
-### 205. Formulario para editar documentos
-6 min
-### 206. Agregar documentos a Firestore
-7 min
-### 207. Eliminar documento de Firestore
-9 min
-### 208. Finalizando proyecto agregando Bootstrap 4
-9 min
-### 209. Presentación del proyecto AUTH (Login y Registro)
-1 min
 ### 210. Versión de Firebase (¡Importante!)
 1 min
 ### 211. Instalación Vue CLI 4 e iniciar proyecto de Firebase
