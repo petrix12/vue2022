@@ -7472,8 +7472,66 @@
 + $ git push -u origin main
 
 
-## Sección 20: (Vue.js 2) Bootstrap 4 - Mejorando apariencia
-### 209. Presentación del proyecto AUTH (Login y Registro)
+## Sección 22: (Vue.js 2) AUTH - Rutas Protegidas: Autehticación con Firebase
++https://bluuweb.github.io/vue-udemy/08-auth-firebase/#instalaciones
+
+### 241. Presentación del proyecto AUTH (Login y Registro)
++ **VIDEO DESACTUALIZADO**
+
+### 242. Versión de Firebase (¡Importante!)
++ **VIDEO DESACTUALIZADO**
+
+### 243. Instalación Vue CLI 4 e iniciar proyecto de Firebase
++ **VIDEO DESACTUALIZADO**
+
+### 244. Devtools y documentación
++ **VIDEO DESACTUALIZADO**
+
+### 245. Archivo configuración Firebase
++ **VIDEO DESACTUALIZADO**
+
+### 246. Vista y Ruta Registro.vue
++ **VIDEO DESACTUALIZADO**
+
+### 247. Registrar nuevo usuario en Firebase
++ **VIDEO DESACTUALIZADO**
+
+### 248. Validando contraseñas
++ **VIDEO DESACTUALIZADO**
+
+### 249. Push a vista Inicio.vue
++ **VIDEO DESACTUALIZADO**
+
+### 250. Validar tamaño de contraseña
++ **VIDEO DESACTUALIZADO**
+
+### 251. Acceso usuarios registrados (Login)
++ **VIDEO DESACTUALIZADO**
+
+### 252. Cerrar sesión
++ **VIDEO DESACTUALIZADO**
+
+### 253. Detectar usuario registrado
++ **VIDEO DESACTUALIZADO**
+
+### 254. Rutas protegidas
++ **VIDEO DESACTUALIZADO**
+
+### 255. Error en consola
++ **VIDEO DESACTUALIZADO**
+
+### 256. Getters: ocultar menú de navegación
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) AUTH - Rutas Protegidas: Autehticación con Firebase"
++ $ git push -u origin main
+
+
+## Sección 21: (Vue.js 2) Firestore - Firebase Auth y base de datos
+### 225. Relacionar Auth con Collection de Firestore
+
 
 
 
@@ -7485,38 +7543,9 @@
     ```vue
     ```
 
-### 210. Versión de Firebase (¡Importante!)
-1 min
-### 211. Instalación Vue CLI 4 e iniciar proyecto de Firebase
-7 min
-### 212. Devtools y documentación
-1 min
-### 213. Archivo configuración Firebase
-3 min
-### 214. Vista y Ruta Registro.vue
-8 min
-### 215. Registrar nuevo usuario en Firebase
-18 min
-### 216. Validando contraseñas
-6 min
-### 217. Push a vista Inicio.vue
-5 min
-### 218. Validar tamaño de contraseña
-1 min
-### 219. Acceso usuarios registrados (Login)
-12 min
-### 220. Cerrar sesión
-4 min
-### 221. Detectar usuario registrado
-10 min
-### 222. Rutas protegidas
-9 min
-### 223. Error en consola
-2 min
-### 224. Getters: ocultar menú de navegación
-4 min
-### 225. Relacionar Auth con Collection de Firestore
-7 min
+
+
+
 ### 226. GET Tareas de un usuario registrado
 4 min
 ### 227. UPDATE Tarea de usuario
