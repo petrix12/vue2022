@@ -7530,11 +7530,30 @@
 
 
 ## Sección 21: (Vue.js 2) Firestore - Firebase Auth y base de datos
-### 225. Relacionar Auth con Collection de Firestore
+### 274. Relacionar Auth con Collection de Firestore
++ **VIDEO DESACTUALIZADO**
+
+### 275. GET Tareas de un usuario registrado
++ **VIDEO DESACTUALIZADO**
+
+### 276. UPDATE Tarea de usuario
++ **VIDEO DESACTUALIZADO**
+
+### 277. POST tarea de usuario
++ **VIDEO DESACTUALIZADO**
+
+### 278. DELETE tarea de usuario
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) Firestore - Firebase Auth y base de datos"
++ $ git push -u origin main
 
 
-
-
+## Sección 25: (Vue.js 2) BOOTSTRAP 4 - Mejorando apariencia
+### 230. Introducción a Bootstrap 4
+2 min
 
 
 
@@ -7546,16 +7565,6 @@
 
 
 
-### 226. GET Tareas de un usuario registrado
-4 min
-### 227. UPDATE Tarea de usuario
-4 min
-### 228. POST tarea de usuario
-2 min
-### 229. DELETE tarea de usuario
-3 min
-### 230. Introducción a Bootstrap 4
-2 min
 ### 231. Agregando Bootstrap 4 a nuestro proyecto
 9 min
 ### 232. Compilar proyecto de Vue con CLI 4
