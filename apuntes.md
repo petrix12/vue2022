@@ -7552,9 +7552,21 @@
 
 
 ## Sección 25: (Vue.js 2) BOOTSTRAP 4 - Mejorando apariencia
-### 230. Introducción a Bootstrap 4
-2 min
+### 279. Introducción a Bootstrap 4
++ **VIDEO DESACTUALIZADO**
 
+### 280. Agregando Bootstrap 4 a nuestro proyecto
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) BOOTSTRAP 4 - Mejorando apariencia"
++ $ git push -u origin main
+
+
+## Sección26: (Vue.js 2) HOSTING - Publicar proyectos en Firebase gratis
+### 281. Compilar proyecto de Vue con CLI 4
+3 min
 
 
 
@@ -7565,16 +7577,15 @@
 
 
 
-### 231. Agregando Bootstrap 4 a nuestro proyecto
+### 282. Subir proyecto a Hosting de Firebase
 9 min
-### 232. Compilar proyecto de Vue con CLI 4
-3 min
-### 233. Subir proyecto a Hosting de Firebase
-9 min
-### 234. Reglas de Seguridad Firebase
+### 283. Reglas de Seguridad Firebase
 5 min
-### 235. Archivos Terminados de esta sección
+### 284. Archivos Terminados de esta sección
 1 min
+
+
+## Sección 27: (Vue.js 2) BOOTSTRAP 4 - Vue + Formularios
 ### 236. Instalar Bootstrap 4 en Vue a través de NPM
 5 min
 ### 237. Navbar y Class Active en Router Link
