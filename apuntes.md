@@ -7566,7 +7566,26 @@
 
 ## Sección26: (Vue.js 2) HOSTING - Publicar proyectos en Firebase gratis
 ### 281. Compilar proyecto de Vue con CLI 4
-3 min
++ **VIDEO DESACTUALIZADO**
+
+### 282. Subir proyecto a Hosting de Firebase
++ **VIDEO DESACTUALIZADO**
+
+### 283. Reglas de Seguridad Firebase
++ **VIDEO DESACTUALIZADO**
+
+### 284. Archivos Terminados de esta sección
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) HOSTING - Publicar proyectos en Firebase gratis"
++ $ git push -u origin main
+
+
+## Sección 27: (Vue.js 2) BOOTSTRAP 4 - Vue + Formularios
+### 236. Instalar Bootstrap 4 en Vue a través de NPM
+5 min
 
 
 
@@ -7577,17 +7596,6 @@
 
 
 
-### 282. Subir proyecto a Hosting de Firebase
-9 min
-### 283. Reglas de Seguridad Firebase
-5 min
-### 284. Archivos Terminados de esta sección
-1 min
-
-
-## Sección 27: (Vue.js 2) BOOTSTRAP 4 - Vue + Formularios
-### 236. Instalar Bootstrap 4 en Vue a través de NPM
-5 min
 ### 237. Navbar y Class Active en Router Link
 9 min
 ### 238. Columnas responsives (Row/Col)
