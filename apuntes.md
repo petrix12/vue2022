@@ -7584,8 +7584,33 @@
 
 
 ## Sección 27: (Vue.js 2) BOOTSTRAP 4 - Vue + Formularios
-### 236. Instalar Bootstrap 4 en Vue a través de NPM
-5 min
+### 285. Instalar Bootstrap 4 en Vue a través de NPM
++ **VIDEO DESACTUALIZADO**
+
+### 286. Navbar y Class Active en Router Link
++ **VIDEO DESACTUALIZADO**
+
+### 287. Columnas responsives (Row/Col)
++ **VIDEO DESACTUALIZADO**
+
+### 288. Botones y Cards
++ **VIDEO DESACTUALIZADO**
+
+### 289. Form Input Text / Number
++ **VIDEO DESACTUALIZADO**
+
+### 290. Form Input Select / Radio / Checkbox
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) BOOTSTRAP 4 - Vue + Formularios"
++ $ git push -u origin main
+
+
+## Sección 28: (Vue.js 2) VALIDATE - Validaciones Formularios
+### 242. Instalación y configuración de Vuelidate
+2 min
 
 
 
@@ -7596,18 +7621,6 @@
 
 
 
-### 237. Navbar y Class Active en Router Link
-9 min
-### 238. Columnas responsives (Row/Col)
-6 min
-### 239. Botones y Cards
-5 min
-### 240. Form Input Text / Number
-6 min
-### 241. Form Input Select / Radio / Checkbox
-7 min
-### 242. Instalación y configuración de Vuelidate
-2 min
 ### 243. Validación de E-mail
 10 min
 ### 244. Validación de contraseñas
