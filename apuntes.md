@@ -7609,8 +7609,30 @@
 
 
 ## Sección 28: (Vue.js 2) VALIDATE - Validaciones Formularios
-### 242. Instalación y configuración de Vuelidate
-2 min
+### 291. Instalación y configuración de Vuelidate
++ **VIDEO DESACTUALIZADO**
+
+### 292. Validación de E-mail
++ **VIDEO DESACTUALIZADO**
+
+### 293. Validación de contraseñas
++ **VIDEO DESACTUALIZADO**
+
+### 294. Validar Botón Submit
++ **VIDEO DESACTUALIZADO**
+
+### 295. Lazy: Generar espera para validar
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) VALIDATE - Validaciones Formularios"
++ $ git push -u origin main
+
+## Sección 29: (Vue.js 2) Agregando mejoras (Proyecto Auth Firebase)
+### 296. Actualización 2020
+1 min
+
 
 
 
@@ -7621,36 +7643,33 @@
 
 
 
-### 243. Validación de E-mail
-10 min
-### 244. Validación de contraseñas
-10 min
-### 245. Validar Botón Submit
-7 min
-### 246. Lazy: Generar espera para validar
-2 min
-### 247. Actualización 2020
-1 min
-### 248. Preloader o Spinner [vue-spinner]
+### 297. Preloader o Spinner [vue-spinner]
 11 min
-### 249. Validando Formularios y bloquear botones
+### 298. Validando Formularios y bloquear botones
 12 min
-### 250. Validando Editar Tarea
+### 299. Validando Editar Tarea
 5 min
-### 251. Validando Ingreso de usuarios
+### 300. Validando Ingreso de usuarios
 6 min
-### 252. Validando Registro de usuarios
+### 301. Validando Registro de usuarios
 6 min
-### 253. Manejando mensajes de Firebase [Ingles al Español]
+### 302. Manejando mensajes de Firebase [Ingles al Español]
 7 min
-### 254. Archivos terminados de esta sección
+### 303. Archivos terminados de esta sección
 1 min
-### 255. Agregando un Buscador a nuestra lista de Tareas
+### 304. Agregando un Buscador a nuestra lista de Tareas
 14 min
-### 256. Actualizar proyecto en Firebase Hosting
+### 305. Actualizar proyecto en Firebase Hosting
 3 min
-### 257. Archivos terminados de esta sección
+### 306. Archivos terminados de esta sección
 1 min
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) Agregando mejoras (Proyecto Auth Firebase)"
++ $ git push -u origin main
+
+## Sección 30: (Vue.js 2) AXIOS Y VUETIFY
 ### 258. Presentación del proyecto a realizar
 2 min
 ### 259. Nota importante de Vuetify
