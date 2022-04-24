@@ -7629,10 +7629,50 @@
 + $ git commit -m "(Vue.js 2) VALIDATE - Validaciones Formularios"
 + $ git push -u origin main
 
+
 ## Sección 29: (Vue.js 2) Agregando mejoras (Proyecto Auth Firebase)
 ### 296. Actualización 2020
-1 min
++ **VIDEO DESACTUALIZADO**
 
+### 297. Preloader o Spinner [vue-spinner]
++ **VIDEO DESACTUALIZADO**
+
+### 298. Validando Formularios y bloquear botones
++ **VIDEO DESACTUALIZADO**
+
+### 299. Validando Editar Tarea
++ **VIDEO DESACTUALIZADO**
+
+### 300. Validando Ingreso de usuarios
++ **VIDEO DESACTUALIZADO**
+
+### 301. Validando Registro de usuarios
++ **VIDEO DESACTUALIZADO**
+
+### 302. Manejando mensajes de Firebase [Ingles al Español]
++ **VIDEO DESACTUALIZADO**
+
+### 303. Archivos terminados de esta sección
++ **VIDEO DESACTUALIZADO**
+
+### 304. Agregando un Buscador a nuestra lista de Tareas
++ **VIDEO DESACTUALIZADO**
+
+### 305. Actualizar proyecto en Firebase Hosting
++ **VIDEO DESACTUALIZADO**
+
+### 306. Archivos terminados de esta sección
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) Agregando mejoras (Proyecto Auth Firebase)"
++ $ git push -u origin main
+
+
+## Sección 30: (Vue.js 2) AXIOS Y VUETIFY
+### 258. Presentación del proyecto a realizar
+2 min
 
 
 
@@ -7643,35 +7683,6 @@
 
 
 
-### 297. Preloader o Spinner [vue-spinner]
-11 min
-### 298. Validando Formularios y bloquear botones
-12 min
-### 299. Validando Editar Tarea
-5 min
-### 300. Validando Ingreso de usuarios
-6 min
-### 301. Validando Registro de usuarios
-6 min
-### 302. Manejando mensajes de Firebase [Ingles al Español]
-7 min
-### 303. Archivos terminados de esta sección
-1 min
-### 304. Agregando un Buscador a nuestra lista de Tareas
-14 min
-### 305. Actualizar proyecto en Firebase Hosting
-3 min
-### 306. Archivos terminados de esta sección
-1 min
-
-### Subiendo cambios GitHub:
-+ $ git add .
-+ $ git commit -m "(Vue.js 2) Agregando mejoras (Proyecto Auth Firebase)"
-+ $ git push -u origin main
-
-## Sección 30: (Vue.js 2) AXIOS Y VUETIFY
-### 258. Presentación del proyecto a realizar
-2 min
 ### 259. Nota importante de Vuetify
 1 min
 ### 260. Actualización Vuetify 2.x
