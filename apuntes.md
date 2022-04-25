@@ -7671,8 +7671,54 @@
 
 
 ## Sección 30: (Vue.js 2) AXIOS Y VUETIFY
-### 258. Presentación del proyecto a realizar
-2 min
+### 307. Presentación del proyecto a realizar
++ **VIDEO DESACTUALIZADO**
+
+### 308. Nota importante de Vuetify
++ **VIDEO DESACTUALIZADO**
+
+### 309. Actualización Vuetify 2.x
++ **VIDEO DESACTUALIZADO**
+
+### 310. Nota importante de vue-axios
++ **VIDEO DESACTUALIZADO**
+
+### 311. Instalación de Vuetify y Axios
++ **VIDEO DESACTUALIZADO**
+
+### 312. Grid en Vuetify
++ **VIDEO DESACTUALIZADO**
+
+### 313. Creando vista Calendario y Cards
++ **VIDEO DESACTUALIZADO**
+
+### 314. Configurando mínimo y máximo en Calendario
++ **VIDEO DESACTUALIZADO**
+
+### 315. Axios: Consumiendo API pública
++ **VIDEO DESACTUALIZADO**
+
+### 316. Invertir fechas con Javascript
++ **VIDEO DESACTUALIZADO**
+
+### 317. Agregando Try and Catch
++ **VIDEO DESACTUALIZADO**
+
+### 318. Finalizando proyecto agregando Loading
++ **VIDEO DESACTUALIZADO**
+
+### 319. Archivos terminados de esta sección
++ **VIDEO DESACTUALIZADO**
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) AXIOS Y VUETIFY"
++ $ git push -u origin main
+
+
+## Sección 31: (Vue.js 2) GMAIL Y FACEBOOK AUTH
+### 320. Presentación Registro con Gmail y Facebook
+1 min
 
 
 
@@ -7683,58 +7729,40 @@
 
 
 
-### 259. Nota importante de Vuetify
+### 321. Nota importante de Vuetify
 1 min
-### 260. Actualización Vuetify 2.x
-11 min
-### 261. Nota importante de vue-axios
+### 322. Versión de Firebase (¡Importante!)
 1 min
-### 262. Instalación de Vuetify y Axios
+### 323. Instalación VueCLI3 - Vuetify - Npm Firebase
 5 min
-### 263. Grid en Vuetify
-7 min
-### 264. Creando vista Calendario y Cards
-5 min
-### 265. Configurando mínimo y máximo en Calendario
-5 min
-### 266. Axios: Consumiendo API pública
-6 min
-### 267. Invertir fechas con Javascript
-5 min
-### 268. Agregando Try and Catch
+### 324. Error 403 GMAIL
+1 min
+### 325. Configuración Firebase
 4 min
-### 269. Finalizando proyecto agregando Loading
-8 min
-### 270. Archivos terminados de esta sección
-1 min
-### 271. Presentación Registro con Gmail y Facebook
-1 min
-### 272. Nota importante de Vuetify
-1 min
-### 273. Versión de Firebase (¡Importante!)
-1 min
-### 274. Instalación VueCLI3 - Vuetify - Npm Firebase
-5 min
-### 275. Error 403 GMAIL
-1 min
-### 276. Configuración Firebase
-4 min
-### 277. Creando vista ingreso
+### 326. Creando vista ingreso
 15 min
-### 278. Configurando ingreso con Gmail
+### 327. Configurando ingreso con Gmail
 7 min
-### 279. Guardar usuario en Firestore
+### 328. Guardar usuario en Firestore
 5 min
-### 280. Configurando ingreso con Facebook
+### 329. Configurando ingreso con Facebook
 8 min
-### 281. Detectar usuario registrado
+### 330. Detectar usuario registrado
 6 min
-### 282. Configurando rutas protegidas
+### 331. Configurando rutas protegidas
 9 min
-### 283. Archivos terminados de esta sección
+### 332. Archivos terminados de esta sección
 1 min
-### 284. Reglas Firebase y subir al Hosting
+### 333. Reglas Firebase y subir al Hosting
 1 min
+
+### Subiendo cambios GitHub:
++ $ git add .
++ $ git commit -m "(Vue.js 2) GMAIL Y FACEBOOK AUTH"
++ $ git push -u origin main
+
+
+## Sección 32: (Vue.js 2) IMÁGENES - Proyecto con Storage
 ### 285. Presentación proyecto Foto de Perfil
 1 min
 ### 286. Componente Navbar
